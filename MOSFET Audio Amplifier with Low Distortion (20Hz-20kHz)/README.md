@@ -1,3 +1,24 @@
+<p align="center">
+  <img src="Photos/Banner.png"/>
+</p>
+
+<!-- Badge icons found at https://feathericons.com/-->
+<p align="center">
+
+<a href="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=gray">
+  <img src="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=white" alt="Project Status" title="Project Status" style="vertical-align:top; margin:4px">
+</a>
+
+<a href="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=gray">
+  <img src="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=white" alt="Project Status" title="Project Status" style="vertical-align:top; margin:4px">
+</a>
+
+<a href="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=gray">
+  <img src="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=white" alt="Project Status" title="Project Status" style="vertical-align:top; margin:4px">
+</a>
+
+</p>
+
 # <p align="center">MOSFET Audio Amplifier with Low Distortion (20Hz-20KHz)</p>
 
 Our task is to design an amplifier using a MOSFET transistor with minimal distortion, suitable gain, and capable of driving a 32-ohm load. We aim for a frequency response from 20 Hz to 20 kHz and sufficient power output, assuming the available DC supply is between 10V to 20V. We need to choose a suitable transistor and justify our choice, perform both DC and AC analysis, calculate the gain, input impedance, output impedance, and output power. Additionally, we must simulate the circuit in NI Multisim and use the frequency response function to prove a flat response over the required range. The amplifier can be any circuit of our choice.
