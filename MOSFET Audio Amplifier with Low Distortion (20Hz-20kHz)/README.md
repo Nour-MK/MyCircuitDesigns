@@ -54,12 +54,17 @@ As for our task, it suggests designing an audio amplifier. I have inferred this 
    
 7. [National Instruments Multisim](https://imag.malavida.com/mvimgbig/download-fs/ni-multisim-9083-1.jpg): A powerful circuit simulation software used for designing, prototyping, and testing electronic circuits. It offers a wide range of tools for simulating analog, digital, and mixed-signal circuits, helping to visualize and analyze circuit behavior in real-time. Multisim's extensive component library makes it ideal for both educational and professional use.
 
-8. [CRUMB Circuit Simulator](https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2198800/capsule_616x353.jpg?t=1732890458): It stands out by providing a graphically stimulating, realistic 3D environment, unlike other simulation software that typically display only schematic diagrams. Crumb's immersive interface makes it easier for users to visualize and interact with their circuits as they would with physical components. Crumb offers a wide range of components, allowing users to experiment with different circuit designs and configurations and it can be used as a learning educational tool and as a prototype workspace for electronic hobbyists and professionals. This is the closest you can get to a hands-on experience through a computer's screen.
+8. [CRUMB Circuit Simulator](https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2198800/capsule_616x353.jpg?t=1732890458): It stands out by providing a graphically stimulating, realistic 3D environment, unlike other simulation software that typically display only schematic diagrams. Crumb's immersive interface makes it easier for users to visualize and interact with their circuits as they would with physical components. Crumb offers a wide range of components, allowing users to experiment with different circuit designs and configurations and it can be used as a learning educational tool and as a prototype workspace for electronic hobbyists and professionals. This is the closest you can get to a hands-on experience through a computer's screen. First we had breadboards to simulate circuits. Now we got software to simulate breadboards. 
 
 The detailed calculations regarding the values chosen for each of the circuit building components and any supporting assumptions will be thoroughly elaborated in the subsequent section, to provide a comprehensive understanding of the underlying processes.
 
 
 ## Design Procedure
+
+### Choices & Justifications
+Enhancement-type MOSFETs are typically preferred for amplifier applications due to their normally-off nature, meaning they only conduct when a suitable gate-to-source voltage is applied. This feature makes them inherently more power-efficient as they do not consume power in the off state, which is ideal for amplification tasks. Additionally, they offer ease of control as a positive gate voltage is sufficient to turn them on, unlike depletion MOSFETs which require a negative voltage to turn off. This simplifies the design and control of amplifier circuits. Moreover, the precise control of gate voltage in enhancement MOSFETs allows for accurate and stable signal amplification, improving overall performance. They also generate less heat, reducing the need for extensive cooling mechanisms, thereby enhancing reliability and lifespan. Furthermore, the efficient operation of enhancement MOSFETs contributes to lower noise levels in the amplification process, resulting in cleaner output signals. All these advantages make enhancement-type MOSFETs the preferred choice for efficient, reliable, and high-performance amplification circuits.
+
+N-channel MOSFETs are often preferred over P-channel MOSFETs in amplifier designs due to several key advantages. Firstly, N-channel MOSFETs typically offer lower on-resistance and higher current-carrying capabilities, which translates to better efficiency and performance in amplification circuits. They have superior electron mobility compared to P-channel devices, allowing for faster switching speeds and reduced power losses. This results in improved overall efficiency of the amplifier. Additionally, the drive voltage required to switch N-channel MOSFETs is generally lower, simplifying the design of the gate drive circuitry and enhancing the ease of control. This lower drive voltage also contributes to reduced power consumption and heat generation, which is critical for maintaining the reliability and longevity of the amplifier. Furthermore, N-channel MOSFETs are more widely available and cost-effective, making them a practical choice for most applications. These factors combined make N-channel MOSFETs the preferred option for high-performance, efficient, and cost-effective amplifier designs.
 
 Our MOSFET needs to be turned on before we can use it, so we need to bias it properly. Biasing a MOSFET ensures that it operates in the desired region. A good bias design ensures that the parameters of the operating point $I_D$, $V_{OV}$, and $V_{DS}$ are predictable, stable, and don't vary by a large amount when the transistor is replaced by another of the same type. There are several types of MOSFET biasing methods, each with its own merits and disadvantages. __Fixed Biasing__ involves applying a constant voltage to the gate using a resistor. This method is simple and easy to implement, but it lacks stability, as variations in the threshold voltage or temperature changes can significantly affect the operating point. __Voltage Divider Biasing__ uses a pair of resistors to create a stable voltage at the gate. This method provides better stability and control over the operating point compared to fixed biasing, but it is more complex to design and requires precise resistor values to maintain the desired bias point. __Self-Biasing or Source Biasing__ involves placing a resistor in the source terminal of the MOSFET. This method provides automatic adjustment of the gate-source voltage based on the current flow, enhancing stability. However, it can reduce the overall gain of the amplifier due to the voltage drop across the source resistor. For our designs, we will be using the classical voltage divider biasing technique.
 
@@ -68,57 +73,166 @@ We will be using the common source configuration of MOSFET amplifiers as it is t
 In a Common Source MOSFET Amplifier, the source terminal is directly connected to the ground, which generally provides higher voltage gain due to the absence of resistive elements in the source path. However, this configuration lacks stability, as variations in the MOSFET's parameters, such as threshold voltage and temperature changes, can significantly impact the operating point and gain. Linearity can also be compromised because the amplifier could easily enter non-linear regions due to the lack of feedback. In contrast, a Common Source configuration with a Source Resistor $R_S$ includes a resistor in the source path, connecting the source terminal to the ground through the resistor. This setup reduces the voltage gain compared to the simple common source configuration, as the gain is influenced by the value of the source resistor, which provides feedback. However, the inclusion of $R_S$ enhances the stability of the amplifier, introducing negative feedback that helps stabilize the operating point against variations in the MOSFET’s parameters and temperature changes. Improved linearity is achieved due to the negative feedback provided by the source resistor, maintaining consistent performance and reducing distortion. While the Common Source configuration offers higher gain and a simpler design, it is less stable and more prone to distortion. On the other hand, the Common Source with $R_S$ provides improved stability, better linearity, and reduced distortion but at the cost of lower gain and increased design complexity. Therefore, we will be using CS MOSFET with $R_S$.
 
 
+### Design Approaches
+
+Common-source MOSFET amplifier designs can accommodate loads in different ways, depending on how the load is modeled and connected. One approach is using $R_D$ as the load resistor. In this case, the drain resistor $R_D$ defines the load seen by the MOSFET. This configuration is straightforward and simplifies the design process, as $R_D$ alone determines the load line and the voltage gain. The advantage of this method is its simplicity and ease of calculation, making it suitable for basic amplification needs without stringent gain requirements. However, it may limit the flexibility in designing for specific load conditions and can result in suboptimal power transfer to the actual load if $R_D$ does not match the intended load impedance. Alternatively, an explicit load resistor $R_L$ can be added to the circuit. In this configuration, $R_D$ and $R_L$ work together to form a combined load. This setup allows for greater flexibility in matching the amplifier's output to the desired load impedance, improving power transfer and efficiency. The explicit $R_L$ can also be tailored to achieve specific performance characteristics, such as a desired gain or bandwidth. However, this approach introduces additional complexity in the design and calculation process, as both $R_D$ and $R_L$ must be considered together. The trade-off involves balancing the desired performance against the increased design complexity.
+
+In designing these amplifiers, we can take two different approaches. The first approach, without a specific gain in mind, focuses on simply ensuring that the signal gets amplified. Whatever gain value is achieved can be further increased by using cascaded stages of the same design. This method prioritizes simplicity and modularity, allowing multiple identical stages to be combined to achieve higher overall gain. It is particularly useful in applications where exact gain control is not critical but where a significant increase in signal strength is needed.
+
+The second approach involves designing with a target gain in mind, which alters the steps of calculation. This method requires careful consideration of component values and circuit parameters to achieve the desired gain in a single stage, reducing the need for multiple cascaded stages. By precisely tailoring the $R_D$ and $R_L$ values, the amplifier can be optimized to deliver a specific gain, improving efficiency and reducing circuit complexity. This approach is advantageous when precise gain control is required for the application, ensuring that the amplifier meets specific performance criteria without the need for additional stages.
 
 
 
+<details>
+  <summary>Designing Without a Target Gain with Explicit $R_L$ Then Adding More Amplifier Stages</summary>
+  
+We are using:
+- $R_L = 32$ Ω
+- $V_{DD} = 20$ V
+
+We have the following characteristics of the 2N7000 from the datasheet:
+- $V_{GS(th)} = 2.1$ V
+- $I_{D(max)}$ = 200mA, which we will use.
+- We can also get the $k_n$ from the $V_{GS}$ vs $I_D$ [graph](Photos/datasheet-vgs-id-graph.png) in the datasheet.
+  
+Using the drain current equation in saturation mode: 
+
+$$ I_D = \frac{kn}{2} (V_{GS} - V_{TH})^2 $$
+
+So,
+
+$$ kn = \frac{2I_D}{(V_{GS} - V_{TH})^2} $$
+
+From the graph, when $V_{GS} = 6$ V, $I_D = 1.1$ A.
+
+Plugging these values into the $k_n$ equation:
+
+$$ kn = \frac{2 \times 1.1}{(6 - 2.1)^2} = 0.1446 \text{ A/V}^2 $$
 
 
+#### Voltage Calculations
+The rule of thirds is a heuristic used to position the operating point of a transistor, such as a MOSFET, to maximize the output voltage swing and ensure linear operation. By dividing the supply voltage ($V_{DD}$) into thirds, the operating point is chosen to balance between the different voltage states, ensuring the MOSFET remains in its optimal region for amplification (saturation) while allowing the maximum possible output signal without distortion. Setting the drain voltage to two-thirds of the supply voltage ensures that there is enough voltage drop across the MOSFET to keep it in the saturation region. This is crucial for the MOSFET to function effectively as an amplifier, as it needs a substantial voltage difference between the drain and source. Setting the source voltage to one-third of the supply voltage provides a stable reference point for the gate voltage. This helps to balance the voltage levels within the circuit, ensuring that the gate-to-source voltage ($V_{GS}$) is sufficient to turn the MOSFET on and maintain it in saturation. By having the source voltage at one-third of the supply voltage, it allows for a significant voltage swing without pushing the MOSFET out of the desired operating region.
+
+$$ V_D = \frac{2}{3} V_{DD} = \frac{2}{3} \times 20 = 13.3 \text{ V} $$
+
+$$ V_S = \frac{1}{3} V_{DD} = \frac{1}{3} \times 20 = 6.6 \text{ V} $$
+
+#### Resistance Calculations
+
+By Ohm's Law $V_D = I_D \times R_D$:
+
+$$ 13.3 = 0.200 R_D $$
+
+$$ R_D = 66.5 \text{ Ω} $$
+
+But this is divided over $R_D$ and $R_L$ because they are in series, so:
+
+$$ R_D = 34 \text{ Ω} $$ because $$ R_L = 32 \text{ Ω} $$
+
+For $V_S = I_S \times R_S$ where $I_S = I_D$ because the same current passes through both the drain and source terminals:
+
+$$ 6.6 = 0.200 R_S $$
+
+$$ R_S = 33 \text{ Ω} $$
+
+#### Gate-Source Voltage Calculation
+
+Using $I_D = \frac{1}{2} kn (V_{GS} - V_{TH})^2$ again we get:
+
+$$ 0.200 = \frac{1}{2} \times 0.144 \times (V_{GS} - 2.1)^2 $$
+
+$$ V_{GS} = \sqrt{\left( \frac{2 \times 0.200}{0.144} \right)} + 2.1 = 3.76 $$
+
+#### Gate Voltage Calculation
+
+$$ V_{GS} = V_G - V_S $$
+
+$$ 3.76 = V_G - 6.6 $$
+
+$$ V_G = 10.36 $$
+
+#### Voltage Divider Calculation
+We know that we are controlling the gate voltage through the voltage divider network formed by $R1$ and $R2$.
+
+$$V_G = V_{DD} \left( \frac{R2}{R1 + R2} \right)$$
+
+Given:
+
+$$10.36 = 20 \left( \frac{R2}{R1 + R2} \right)$$
+
+Solving for $\frac{R2}{R1 + R2}$:
+
+$$\frac{R2}{R1 + R2} = \frac{259}{500}$$
+
+Therefore:
+
+$$R2 = 259$$
+
+And:
+
+$$500 = R1 + 259$$
+
+$$R1 = 241$$
+
+We use $R2 = 259k \Omega$ and $R1 = 241k \Omega$ because using kilo-ohms helps reduce the current through the voltage divider, minimizing power loss.
+
+**Equivalent Input Resistance ($R_{eq(in)}$):**
+
+$$R_{eq(in)} = \frac{R1 \cdot R2}{R1 + R2} = \frac{(241 \times 10^3) \cdot (259 \times 10^3)}{(241 \times 10^3) + (259 \times 10^3)} = 124,838 \Omega$$
+
+**Frequency Calculations:**
+To ensure that the capacitive reactance at the cutoff frequency does not interfere significantly with the signal of interest. A decade below the lowest frequency ensures that the capacitors act almost like short circuits (very low impedance) at the frequencies of interest, thus not affecting the performance of the amplifier. So, to ensure the cutoff frequency ($f_c$) is at least one decade below the lowest frequency (20 Hz):
+
+$$f_c = \frac{20}{10} = 2 \text{Hz}$$
+
+**Input Coupling Capacitance ($C_{in}$):**
+
+$$C_{in} = \frac{1}{2 \pi R_{gate} f_c} = \frac{1}{2 \pi (124,838) \cdot 2} = 6.37 \times 10^{-7} = 0.637 \times 10^{-6} \text{F}$$
+
+**Output Coupling Capacitance ($C_{out}$):**
+
+$$C_{out} = \frac{1}{2 \pi (R_D || R_L) f_c} = \frac{1}{2 \pi \left( \frac{66.5 \cdot 32}{66.5 + 32} \right) \cdot 2} = 3.68 \times 10^{-3} \text{F}$$
+
+**Bypass Capacitance ($C_{by}$):**
+
+$$C_{by} = \frac{1}{2 \pi R_S f_c} = \frac{1}{2 \pi \cdot 33 \cdot 2} = 2.411 \times 10^{-3} \text{F}$$
+
+</details>
 
 
-
-
-
-design justifications
-design assumptions
-design choices 
-
-text on paper and throw
-
-vgs controls id because id is a voltage controlled current source
-
-assuming operating in room temperature of 25C
-we have the following characterisctics of the 2n7000 from the datasheet 
-we get the kn from the id vs vgs graph on the datasheet
-using the equation id = kn/2(vgs-vth)^2 so kn = 2ID/(vgs-vth)^2
-from the graph when vgs = 6 V, id = 1.1 A
-therefore plug these values in the kn equation
-from the datasheet vgs(th) = 2.1 V
-
-we ignore channel width modulation effects i.e. lamda is 0 to simplify our calculations 
-
-Enhancement MOSFETs are typically preferred over Depletion MOSFETs for amplifiers because they are normally-off devices. This means they only conduct when a suitable gate-to-source voltage is applied1. This makes them more power-efficient and easier to control, which is ideal for amplification applications.
-
-The Rule of Thirds in MOSFET biasing is a practical guideline for setting the biasing components to ensure the MOSFET operates efficiently and linearly in the saturation region, which is ideal for amplification.
+<details>
+  <summary>Designing Single Stage With a Target Gain with Explicit $R_L$</summary>
 
 The gain of an audio amplifier can vary, but a common target is around 30 dB. This translates to a voltage gain of about 32 times
+  
+</details>
 
-A single-stage amplifier is a basic amplifier configuration that uses only one active device (such as a transistor or an operational amplifier) to amplify a signal. It forms the simplest building block of more complex multi-stage amplifiers.
-Advantages of Single-Stage Amplifiers
-Limitations
-Where to use
-Whether to use a single-stage or a multi-stage amplifier depends on the specific requirements of your application, such as the desired gain, frequency response, power output, and complexity. Here's a comparison to help decide:
 
-common-source MOSFET amplifier designs can handle loads in different ways depending on how the load is modeled and connected. 
-using rd as the load
-adding an explicit rl resistor
-the advantages and disadvantages and when to use each 
+<details>
+  <summary>Designing Without a Target Gain with $R_D$ = $R_L$ Then Adding More Amplifier Stages</summary>
+  
+</details>
 
-the typical vrms and hz and degree of an audio input signal 
+<details>
+  <summary>Designing Single Stage With a Target Gain with $R_D$ = $R_L$</summary>
+
+ 
+</details>
+
+
+A single-stage amplifier represents the most fundamental amplifier configuration, utilizing only one active component—such as a transistor or an operational amplifier—to amplify a signal. This simple design is the cornerstone of more complex multi-stage amplifiers, serving as the essential building block upon which they are constructed. The primary advantage of single-stage amplifiers lies in their simplicity: they are easy to design, analyze, and troubleshoot due to their straightforward configuration. This simplicity also translates to cost-effectiveness, as fewer components are needed, which reduces manufacturing costs and complexity. Moreover, the minimal component count leads to a compact size, making single-stage amplifiers ideal for applications where space is limited. However, this simplicity comes with limitations. Single-stage amplifiers typically provide lower gain compared to their multi-stage counterparts, which can be a drawback in applications requiring significant signal amplification. Additionally, their frequency response might be narrower, restricting their use in wideband applications where a broader frequency range is necessary. The power output of single-stage amplifiers is also generally lower, making them less suitable for high-power applications. Despite these limitations, single-stage amplifiers are well-suited for low-gain applications, such as pre-amplification stages in audio equipment, where moderate amplification suffices. A multistage amplifier, on the other hand, is an amplifier configuration that uses multiple single-stage amplifiers connected in sequence to achieve higher gain, improved frequency response, and enhanced overall performance. Each stage of the amplifier amplifies the signal progressively, allowing for greater amplification than a single-stage amplifier can provide. The construction involves cascading several amplifying stages, typically with coupling capacitors between stages to block DC components and pass the AC signal. This setup ensures that the biasing of each stage remains independent, preserving the amplification integrity. Ultimately, whether to use a single-stage or a multi-stage amplifier depends on the specific requirements of the application, including the desired gain, frequency response, power output, and overall complexity. Each approach offers its own set of benefits and trade-offs, necessitating careful consideration to meet the project’s needs effectively.
+
+
+
 
 
 ## Implementation & Testing 
 
+the typical vrms and hz and degree of an audio input signal 
+
 Frequency response describes how effectively an amplifier, or any electronic system, can amplify or transmit signals of different frequencies. It is typically represented as a graph plotting the amplitude response (output signal strength) against frequency. The bandwidth refers to the range of frequencies over which the amplifier can operate effectively. For audio amplifiers, the bandwidth usually spans from 20 Hz to 20 kHz, covering the human audible range. Ideally, the frequency response should be flat across the desired frequency range, indicating that the amplifier consistently amplifies all frequencies without boosting or attenuating any particular frequency. At the edges of the bandwidth, the frequency response curve typically shows a roll-off, where the amplification starts to decrease. This indicates the frequencies at which the amplifier starts to lose its effectiveness.
+
+If your amplifier has a wide frequency response, it can amplify not only the desired signal within 20 Hz to 20 kHz but also any noise or unwanted signals outside this range. This can degrade the quality of the output signal. Amplifying signals outside the intended frequency range can also lead to unnecessary power consumption and heat generation, which can affect the efficiency and longevity of your amplifier.
 
 ## Result Analysis
 
