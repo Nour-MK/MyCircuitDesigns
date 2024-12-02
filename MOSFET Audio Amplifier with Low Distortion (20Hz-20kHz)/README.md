@@ -454,22 +454,22 @@ Here, we present the testing of the 3 amplifier designs. Each design was careful
   <summary>Designing Without a Target Gain with Explicit $R_L$ Then Adding More Amplifier Stages</summary>
   
 <p align="center">
-  <img src="Photos/randomgainsinglestage.png" title="ModelSim Result" />
+  <img src="Photos/randomgainsinglestage.png" title="Gain 3 Single Stage CS MOSFET" />
 </p>
 
 <p align="center">
-  <img src="Photos/multistage-layoutoverview.png" title="ModelSim Result" />
+  <img src="Photos/multistage-layoutoverview.png" title="Showing single stage, two stages, and three stages in cascade of the same CS MOSFET design" />
 </p>
+
+
+
+https://github.com/user-attachments/assets/08a21e7b-dfd2-49ec-8ff5-c416f121edac
+
+
 
 To calculate the maximum $$V_{\text{rms(in)}}$$ possible without clipping in a Common Source (CS) MOSFET amplifier, it is essential to ensure that the output signal remains within the amplifier's linear operating range. The maximum output swing is limited by the supply voltage ($$V_{DD}$$) and the MOSFET's saturation requirements, where $$V_{DS} > V_{GS} - V_T$$. The relationship between the input and output signals is determined by the amplifier's gain ($$A_v$$), such that $$V_{\text{out(pp)}} = A_v \cdot V_{\text{in(pp)}}$$. From this, the maximum input peak-to-peak voltage can be calculated as $$V_{\text{in(pp)}} = V_{\text{out(pp)}} / A_v$$. To find the root mean square (RMS) value of the input, the conversion formula $$V_{\text{rms(in)}} = V_{\text{in(pp)}} / (2\sqrt{2})$$ is applied.
 
-Noteworthy is that when cascading multiple Common Source (CS) MOSFET amplifier stages, the input signal's $V_{rms}$ must be reduced to prevent output clipping. This occurs because the gain accumulates across stages, with the total gain being the product of the individual stage gains. Even a small input signal can become significantly amplified, and if the signal exceeds the power supply voltage $V_{DD}$ or the MOSFET’s linear operating range, clipping occurs as the amplifier cannot reproduce signals beyond these limits. Additionally, large input signals can shift the biasing of subsequent stages, reducing the available headroom for signal swing and causing distortion. The amplified signal is also constrained by the supply voltage, making it easier to exceed voltage rails in later stages. To prevent clipping, it is essential to limit the input $V_{rms}$, optimize the biasing and gain of each stage, and consider design alternatives such as reducing the number of stages or introducing feedback mechanisms to manage gain effectively.
-
-Calculating Input Impedance
-
-Calculating Output Impedance
-
-Calculating Output Power
+Noteworthy is that when cascading multiple Common Source (CS) MOSFET amplifier stages, the input signal's $V_{rms}$ must be reduced to prevent output clipping. This occurs because the gain accumulates across stages, with the total gain being the product of the individual stage gains. Even a small input signal can become significantly amplified, and if the signal exceeds the power supply voltage $V_{DD}$ or the MOSFET’s linear operating range, clipping occurs as the amplifier cannot reproduce signals beyond these limits. Additionally, large input signals can shift the biasing of subsequent stages, reducing the available headroom for signal swing and causing distortion. The amplified signal is also constrained by the supply voltage, making it easier to exceed voltage rails in later stages. To prevent clipping, it is essential to limit the input $V_{rms}$, optimize the biasing and gain of each stage, and consider design alternatives such as reducing the number of stages or introducing feedback mechanisms to manage gain effectively. Finally, note also that every time you cascade a CS amplifier with the one before it, it inverts the output 180 degrees once again.
 
 </details>
 
@@ -478,21 +478,25 @@ Calculating Output Power
   <summary>Designing Without a Target Gain with $R_D$ = $R_L$ Then Adding More Amplifier Stages</summary>
   
 <p align="center">
-  <img src="Photos/rdisrlcsmosfetamplifier.png" title="ModelSim Result" />
+  <img src="Photos/rdisrlcsmosfetamplifier.png" title="CS MOSFET with RD = RL" />
 </p>
 
+The oscilloscope on the right displays the output waveform, showing a sinusoidal signal with the expected amplified amplitude. The voltage readings displayed on the calculator indicate the corresponding values for the input and output signals, confirming the amplification effect with a gain of -3 again.
+
+
 </details>
+
 
 
 <details>
   <summary>Designing Single Stage With a Target Gain with Explicit $R_L$</summary>
   
 <p align="center">
- <img src="Photos/gain50withoutload.png" style="width: 49%; height: 300px;" title="0000 0000 = 00" /> <img src="Photos/illustratingtheneedforbufferforload.png" style="width: 49%; height: 300px;" title="0001 0000 = 10"/> 
+ <img src="Photos/gain50withoutload.png" style="width: 49%; height: 300px;" title="Gain 50 CS MOSFET without RL connected" /> <img src="Photos/illustratingtheneedforbufferforload.png" style="width: 49%; height: 300px;" title="Once the load was connected the gain got sabotaged so we needed a buffer stage to protect the CS circuit from the effect of the load"/> 
 </p>
 
 <p align="center">
-  <img src="Photos/final-csampifiercascadedwithcdbufferthenload.png" title="ModelSim Result" />
+  <img src="Photos/final-csampifiercascadedwithcdbufferthenload.png" title="CS-CD MOSFET Amplifier-Buffer Circuit with 50 Gain and Load Connected" />
 </p>
 
 
@@ -503,6 +507,8 @@ https://github.com/user-attachments/assets/58d01b6c-78d8-4f0f-8262-1897504275d0
 
 A source follower, also known as a common-drain amplifier, is a configuration commonly used in field-effect transistors (FETs) to convert a high-impedance input to a low-impedance output. It has high input impedance because the gate of the FET draws negligible current, allowing it to accept signals from high-impedance sources without significant loading. The output impedance is low, typically in the range of hundreds of ohms, because the output voltage at the source closely follows the gate voltage minus the threshold voltage. This makes it an ideal buffer, as it isolates stages of a circuit, preventing interaction between them, and allows for effective impedance transformation. In amplifier design, the common-source (CS) configuration is used to achieve high gain, but it has high output impedance, which can limit its ability to drive low-impedance loads. By cascading a source follower with a common-source amplifier, the source follower acts as a buffer, converting the high output impedance of the CS stage to low output impedance, while maintaining the voltage gain. 
 
+In the Crumb simulator, I have laid out my circuit to visualize how it would look if implemented in real life, especially considering the lack of necessary equipment in the lab. The primary challenge, however, is that the simulator only offers a single type of MOSFET, which is not the 2N7000 model used in the design. As a result, the gain value achieved by studying the circuit with an oscilloscope differs due to the distinct characteristics of the MOSFET in the simulator. Despite this, the focus of this simulation isn't on achieving the exact gain but rather on demonstrating how the circuit would appear when connected on a breadboard.
+
 </details>
 
 
@@ -511,11 +517,49 @@ A source follower, also known as a common-drain amplifier, is a configuration co
 
 ## Result Analysis
 
-Because we explored various designs, we will focus our analysis on only one of them to avoid redundancy, as the process would be repeated for each design. The key objective is to gain practical experience in AC, DC, frequency, and power analysis, ensuring a comprehensive understanding of these concepts through focused application.
+Because we explored various designs, we will focus our analysis on only one of them (the 1st design with a single stage) to avoid redundancy, as the process would be repeated for each design. The key objective is to gain practical experience in AC, DC, frequency, and power analysis, ensuring a comprehensive understanding of these concepts through focused application.
 
-### DC Analysis
+<p align="center">
+  <img src="Photos/DCandACanalysis.png" title="ModelSim Result" />
+</p>
 
-### AC Analysis
+When performing the __DC analysis__ of the circuit, all AC sources must be replaced with their equivalent DC conditions. This means that the AC voltage sources are set to zero, effectively treating them as short circuits. This is done because, in DC analysis, we are only interested in the steady-state behavior of the circuit with no time-varying components. Additionally, all capacitors in the circuit are treated as open circuits during DC analysis. This is because, under DC conditions, capacitors do not allow current to flow once they are fully charged, and their impedance becomes infinite. By replacing AC sources with short circuits and capacitors with open circuits, the resulting circuit simplifies, allowing us to analyze the DC operating point and determine the biasing conditions for components like MOSFETs.
+
+
+For the __AC analysis__, we treat all DC sources as short circuits and capacitors as frequency-dependent components with impedance. This is because, in AC analysis, we are concerned with the time-varying signals and how they propagate through the circuit. DC sources, which provide a constant voltage, have no effect on the AC behavior of the circuit, so they are replaced with short circuits. Capacitors, on the other hand, offer impedance that varies with the frequency of the AC signal. Therefore, during AC analysis, we calculate the impedance of the capacitors based on the frequency of the input signal to understand their influence on the circuit's response. By making these adjustments, we can analyze how the circuit amplifies or filters AC signals, determine the frequency response, and calculate parameters such as voltage gain and output power.
+
+
+The input and output impedances of this MOSFET amplifier circuit can be calculated based on the given resistor values and small-signal analysis. The input impedance ($Z_{in}$) is determined at the gate, where the resistors $R_1$ and $R_2$ form a parallel network. Given $R_1 = 241 \, \text{k}\Omega$ and $R_2 = 259 \, \text{k}\Omega$, the input impedance is:
+
+$$Z_{in} = R_1 \parallel R_2 = \frac{R_1 \cdot R_2}{R_1 + R_2} = \frac{241 \cdot 259}{241 + 259} \, \text{k}\Omega \approx 124.8 \, \text{k}\Omega.$$
+
+The output impedance ($Z_{out}$) is analyzed at the drain, where the drain resistor $R_D$ and the load resistor $R_L$ are in parallel. Here, $R_D = 34 \, \Omega$ and $R_L = 32 \, \Omega$, so the output impedance is:
+
+$$Z_{out} = R_D \parallel R_L = \frac{R_D \cdot R_L}{R_D + R_L} = \frac{34 \cdot 32}{34 + 32} \, \Omega \approx \frac{1088}{66} \, \Omega \approx 16.5 \, \Omega.$$
+
+Thus, the input impedance is approximately **124.8 kΩ**, and the output impedance is approximately **16.5 Ω**, reflecting the high input impedance at the gate and the low output impedance at the drain.
+
+
+By using the values measured through the multimeters displayed in the photo, we can calculate the average output power ($P_{\text{avg(out)}}$) as follows:
+
+$$P_{\text{avg(out)}} = \frac{V_{\text{rms}}^2}{R_L}$$
+
+From the multimeter readings:
+
+- $V_{\text{rms(out)}} = 32.33 \, \text{mV} = 32.33 \times 10^{-3} \, \text{V}$
+- $R_L = 32 \, \Omega$
+
+Substitute the values into the equation:
+
+$$P_{\text{avg(out)}} = \frac{(32.33 \times 10^{-3})^2}{32}$$
+
+Simplifying:
+
+$$P_{\text{avg(out)}} = \frac{1.045 \times 10^{-3}}{32} \approx 32.6 \, \mu\text{W}$$
+
+The calculated output power, approximately **32.6 µW**, is quite low. This low output power is primarily due to the circuit configuration, which includes a single amplification stage. The single-stage MOSFET amplifier has limited power delivery because the gain and power output are constrained by the small-signal characteristics of the MOSFET, as well as the values of resistors $R_D$, $R_S$, and $R_L$. The low gain in a single stage restricts the output voltage swing, which directly impacts the power delivered to the load. Additionally, the resistive load of $R_L = 32 \, \Omega$ introduces significant loading on the circuit, further limiting the voltage across the load. The biasing conditions and small-signal operation of the MOSFET also play a role in restricting its amplification capabilities.
+
+In multi-stage amplifiers, the gain increases cumulatively, which in turn enhances the output power. For example, with cascaded stages, the gain increases from **3.2** in a single stage to **21.5** in two stages and further to **128.57** in three stages. This increase in gain allows for a larger output voltage swing, thereby improving the power delivered to the load. By adding more cascaded stages, both the voltage gain and the output power can be significantly enhanced, enabling the amplifier to drive low-impedance loads more effectively.
 
 ### Confirming The Frequency Response
 
@@ -543,7 +587,7 @@ Luckily, most of these points haven't been introduced in the 2 alternative desig
 
 ## Conclusion
 
-Summary of success and results in agreement with calculations
+In summary, we have designed and implemented three different amplifier circuits using the CS configuration of the MOSFET. All of our simulation results were in agreement with the expected theoretical values which highlights our correct methodology. We believe that the final design with a target gain is the most robust as it captures the essence of working to find not just any Q-point to make the MOSFET act as an amplifier, but, more importantly, an amplifier with a certain gain.
 
 A single-stage amplifier represents the most fundamental amplifier configuration, utilizing only one active component—such as a transistor or an operational amplifier—to amplify a signal. This simple design is the cornerstone of more complex multi-stage amplifiers, serving as the essential building block upon which they are constructed. The primary advantage of single-stage amplifiers lies in their simplicity: they are easy to design, analyze, and troubleshoot due to their straightforward configuration. This simplicity also translates to cost-effectiveness, as fewer components are needed, which reduces manufacturing costs and complexity. Moreover, the minimal component count leads to a compact size, making single-stage amplifiers ideal for applications where space is limited. However, this simplicity comes with limitations. Single-stage amplifiers typically provide lower gain compared to their multi-stage counterparts, which can be a drawback in applications requiring significant signal amplification. Additionally, their frequency response might be narrower, restricting their use in wideband applications where a broader frequency range is necessary. The power output of single-stage amplifiers is also generally lower, making them less suitable for high-power applications. Despite these limitations, single-stage amplifiers are well-suited for low-gain applications, such as pre-amplification stages in audio equipment, where moderate amplification suffices. A multistage amplifier, on the other hand, is an amplifier configuration that uses multiple single-stage amplifiers connected in sequence to achieve higher gain, improved frequency response, and enhanced overall performance. Each stage of the amplifier amplifies the signal progressively, allowing for greater amplification than a single-stage amplifier can provide. The construction involves cascading several amplifying stages, typically with coupling capacitors between stages to block DC components and pass the AC signal. This setup ensures that the biasing of each stage remains independent, preserving the amplification integrity. Ultimately, whether to use a single-stage or a multi-stage amplifier depends on the specific requirements of the application, including the desired gain, frequency response, power output, and overall complexity. Each approach offers its own set of benefits and trade-offs, necessitating careful consideration to meet the project’s needs effectively.
 
