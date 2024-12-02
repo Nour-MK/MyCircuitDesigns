@@ -6,18 +6,14 @@
 <p align="center">
 
 <a href="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=gray">
-  <img src="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=white" alt="Project Status" title="Project Status" style="vertical-align:top; margin:4px">
-</a>
-
-<a href="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=gray">
-  <img src="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=white" alt="Project Status" title="Project Status" style="vertical-align:top; margin:4px">
-</a>
-
-<a href="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=gray">
-  <img src="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=white" alt="Project Status" title="Project Status" style="vertical-align:top; margin:4px">
-</a>
+  <img src="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=white" title="Academic Year" style="vertical-align:top; margin:4px"></a> <a href="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=gray"><img src="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=white" title="Bachelor Course" style="vertical-align:top; margin:4px"></a> <a href="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=gray"><img src="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=white" title="Project Status" style="vertical-align:top; margin:4px"></a>
 
 </p>
+
+<p align="center">
+  This report is Markdown-typed and submitted by student Nour Mostafa with ID 2021004938 in partial fulfillment of the requirements for the Bachelor of Science (B.Sc.) degree in Computer Engineering. To view this paper in day or night theme, adjust your settings <a href="https://github.com/settings/appearance">here</a>.
+</p>
+
 
 # <p align="center">MOSFET Audio Amplifier with Low Distortion (20Hz-20KHz)</p>
 
