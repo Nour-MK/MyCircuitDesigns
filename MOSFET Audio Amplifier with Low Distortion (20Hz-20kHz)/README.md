@@ -231,23 +231,157 @@ $$V_{in(rms)} = \frac{V_{in(peak)}}{\sqrt{2}} = \frac{1.603}{\sqrt{2}} = 1.13$$
 
 
 <details>
+  <summary>Designing Without a Target Gain with $R_D$ = $R_L$ Then Adding More Amplifier Stages</summary>
+
+<br>
+</details>
+
+
+<details>
   <summary>Designing Single Stage With a Target Gain with Explicit $R_L$</summary>
 
 <br>
 
 MOSFETs have numerous advantages over Bipolar Junction Transistors (BJTs), yet they are often perceived as limited to delivering modest voltage gains. While calculating the gain for a MOSFET amplifier design is straightforward, achieving a predefined, moderately high gain from the start is challenging. This difficulty arises because a MOSFET's gain parameter, known as transconductance, is dependent on and influenced by its bias point. Many designers overlook MOSFETs in linear applications, assuming that their potential gain is too insignificant to be worthwhile. However, when MOSFETs are properly biased and operated at frequencies below 100KHz, they can achieve gains approaching 50 and offer significantly higher input impedances. This is possible because a MOSFET's gain parameter, known as transconductance (gm), is dependent on its bias point (Q point).
 
-The gain of an audio amplifier can vary widely, typically ranging between 20 dB to 40 dB. In this context, I will aim for a gain of 50 because it seems to be a suitable middle ground within this range. This translates to a voltage gain of approximately 32 times.
+The gain of an audio amplifier can vary widely, typically ranging between 20 dB to 40 dB. In this context, I will aim for a gain of 50 because it seems to be a suitable middle ground within this range.
 
+From the 2N7000 MOSFET datasheet we can get $$V_T = V_{GS(off)} = 2V$$, $$V_{GS(on)} = 10V$$, and $$I_D(on) = 1A$$.
+
+The equation for the drain current for the MOSFET transistor in saturation mode is: $$I_D = \frac{k}{2}(V_{GS} - V_T)^2$$
+
+By rearranging for $$k$$, we get: $$k = \frac{I_D(on)}{(V_{GS(on)} - V_T)^2} = \frac{1}{(10-2)^2} = 0.0156 \, \text{A/V}^2$$
+
+We also have the gain equation as: $$A_v = -gmR_D \parallel R_L$$
+
+But we will ignore the $$R_L$$ for now and focus on developing the gain that we want first, then we can account for the load resistor that will be fed by this amplifier output. So, for now: $$A_v = -gmR_D$$
+
+In order to avoid nonlinear effects of transistor saturation, we use: $$V_d = \frac{1}{2} V_{DD}$$ $$V_{RD} = V_{DD} - V_D = V_{DD} - \frac{1}{2}V_{DD} = \frac{1}{2}V_{DD}$$ 
+
+$$R_D = \frac{V_{RD}}{I_D} = \frac{\frac{1}{2}V_{DD}}{I_D}$$
+
+Transconductance: $$gm = \frac{\Delta I_D}{\Delta V_{GS}} = \frac{\Delta (k(V_{GS} - V_T)^2)}{\Delta V_{GS}} = 2k(V_{GS} - V_T) = 2 \times 0.0156 \times (V_{GS} - 2) = 0.0312(V_{GS} - 2)$$
+
+Gain: $$A_v = -gmR_D$$ $$-50 = - (0.0312(V_{GS} - 2)) \left(\frac{10}{I_D}\right)$$
+
+Rearrange for $$I_D$$: 
+
+$$I_D = \left(\frac{0.0312(V_{GS} - 2) \times 10}{50}\right)$$
+
+Now I can solve the 2 equations simultaneously for 2 unknowns: 
+
+$$I_D = \left(\frac{0.0312(V_{GS} - 2) \times 10}{50}\right)$$ 
+
+$$I_D = \frac{0.0156}{2}(V_{GS} - 2)^2$$
+
+We get: $$V_{GS} = 2.8V$$ and $$I_D = 0.00499A$$
+
+Calculate the transconductance: $$gm = 0.0312 \times (2.8 - 2) = 0.02496 \, S$$ $$R_D = \frac{10}{0.00499} = 2004 \, \Omega$$
+
+As a rule of thumb, we make: $$V_s = \frac{10}{100}V_{DD} = \frac{10}{100} \times 20 = 2V$$ 
+
+Therefore $$R_s = \frac{V_s}{I_D} = \frac{2}{0.00499} = 400.80 \, \Omega$$
+
+$$V_{GS} = V_G - V_S$$ $$2.8 = V_G - 2$$ $$V_G = 4.8V
+
+$$V_G = V_{DD} \left(\frac{R_2}{R_1 + R_2}\right)$$ 
+
+$$4.8 = 20 \left(\frac{R_2}{R_1 + R_2}\right)$$ 
+
+$$\frac{R_2}{R_1 + R_2} = \frac{6}{25}$$
+
+If $$R_2 = 6 \, M\Omega$$, then $$R_1 = 25 - 6 = 19 \, M\Omega$$ 
+
+$$R_{eq} = \frac{R_1 R_2}{R_1 + R_2} = 4560000 \, \Omega$$
+
+To calculate the capacitor values: 
+
+$$C_g = \frac{1}{2\pi \times 0.1 \times 20 \times 4560000} = 17.4 \, nF$$ 
+
+$$C_l = \frac{1}{2\pi \times 0.1 \times 20 \times 1.95 \times 10^3} = 39.7 \, \mu F$$ 
+
+$$C_s = \frac{1}{2\pi \times 0.1 \times 20 \times 4560000} = 198.5 \, \mu F$$
+
+On the simulation, we got a gain of $$-51.8$$, so by tweaking $$R_D$$ to 1.95k, we were able to get a gain of exactly $$50$$.
+
+Finally, to verify that we actually get the gain as $$50$$: $$A_v = -gmR_D = -0.02496 \times 1.95 \times 10^3 = 48.67 \, \text{(approx. 50)}$$
+
+Now the problem that we face here is that once we connect the load of $$32 \, \Omega$$ with the capacitor at the drain output, our gain shifts and becomes 0.something.This is due to the fact that the 2N7000 MOSFET doesn't have a high $$gm$$ or high current handling without loss in gain, so we either use another MOSFET (ideally a power MOSFET, but we'd have to go through its new datasheet) or we can make do with the one we are already familiar with and try to over-engineer this design into being what we want.
+
+So how can we overcome this obstacle while still using the 2n7000 MOSFET? We can use a source follower (CD configuration) MOSFET to keep the gain as it is but at the same time be able to drive the low load unlike the CS configuration, or we connect a current driving op-amp, or we connect 2 CD buffers in parallel at the output of the CS amplifier, but it's more expensive (more components used) and more complex to design. Finally, another thing we could do is to use 2 CS amplifiers in parallel so that their combined current handling can support the 32 ohm load (note that it can support a 32k load but not a 32 ohm because it is too low). However, we cannot be sure if this method would require us to use more than 2 parallel configurations of the CS MOSFET or more, which could also get expensive and impractical.
+
+We have decided to go with cascading a buffer after the CS amplifier output as the only complexity would be to make sure we match the impedance of the output of the CS amplifier to the impedance of the input of the CD buffer - and to just bias the buffer to be in saturation mode so we can achieve that unity gain that we are after.
+
+After we have tried with the source follower (i.e. CD buffer stage in cascade after the CS amplification stage), we have noticed that the load is even too low for the CD buffer and it affects its unity gain. Now instead of having approximately 0.98 or 0.99, we have 0.5.
+
+Before we abandon this method, we decided to use a workaround, which is to account for this attenuation by designing our original MOSFET amplifier to have a gain higher than $$50$$ so that when it gets a little attenuated by the buffer stage, we land on our exact target of $$50$$ gain.
+
+To analyze the situation, when we connected the CS MOSFET -> CD buffer -> load, the load still messed with the setup a little, and the gain of the CS MOSFET became $$52.7$$ and the supposed unity gain of the CD buffer became $$0.59$$, so the total gain in the circuit was $$52.75 \times 0.59 = 31.12$$, which is much below $$50$$.
+
+What we can do now is redesign: 
+
+$$x \times 0.59 = 50$$ 
+
+$$x = 84.54$$ so this is the gain that we should aim for out of the CS amplifier because once the buffer attenuates it, it will become $$50$$.
+
+The only thing we change is the equation of the gain: 
+
+$$A_v = -gmR_D$$ 
+
+$$-84.5 = -(0.0312(V_{GS} - 2))\left(\frac{10}{I_D}\right)$$
+
+Now I can solve the 2 equations simultaneously for 2 unknowns:
+
+$$-84.5 = -(0.0312(V_{GS} - 2))\left(\frac{10}{I_D}\right)$$
+
+$$I_D = \frac{0.0156}{2}(VGS-2)^2$$  
+
+We get:  
+
+$$V_{GS} = 2.47 \, V$$ 
+
+$$I_D = 0.00174 \, A$$  
+
+$$R_D = \frac{10}{0.00174} = 5747.12 \, \Omega$$ 
+
+$$R_S = \frac{2}{0.00174} = 1149.42 \, \Omega$$  
+
+
+$$V_{GS} = V_G - V_S$$
+
+$$2.47 = V_G - 2$$  
+
+$$V_G = 4.47 \, V$$  
+
+$$V_G = V_{DD} \cdot \frac{R2}{R1 + R2}$$ 
+
+$$4.47 = 20 \cdot \frac{R2}{R1 + R2}$$  
+
+$$\frac{R2}{R1 + R2} = \frac{447}{2000}$$  
+
+If we take: 
+
+$$R2 = 44700 \, \Omega$$ 
+
+$$R1 = 155300 \, \Omega$$  
+
+$$R_{eq} = 34709.55 \, \Omega$$  
+
+
+With:  
+
+$$C_g = 0.22 \, \mu F$$  
+
+$$C_l = 13.8 \, \mu F$$ 
+
+$$C_s = 69.2 \, \mu F$$  
+
+Lastly, we had to tinker with the value of $$rs$$ a little to become $$2 \, k\Omega$$, which allowed us to achieve exactly $$84.6$$ gain from the CS amplifier.  
+
+So then:  
+$$84.6 \, \text{gain of the amp} \cdot 0.59 \, \text{gain of the buffer} = 49.9 \, \text{overall gain}$$
 
   
-</details>
-
-
-<details>
-  <summary>Designing Without a Target Gain with $R_D$ = $R_L$ Then Adding More Amplifier Stages</summary>
-
-<br>
 </details>
 
 
