@@ -128,7 +128,7 @@ $$R_D = 66.5 \text{ Ω}$$
 
 But this is divided over $R_D$ and $R_L$ because they are in series, so:
 
-$$R_D = 34 \text{ Ω} $$ because $$ R_L = 32 \text{ Ω}$$
+$$R_D = 34 \text{ Ω} $$ because $$R_L = 32 \text{ Ω}$$
 
 For $V_S = I_S \times R_S$ where $I_S = I_D$ because the same current passes through both the drain and source terminals:
 
@@ -234,7 +234,12 @@ $$V_{in(rms)} = \frac{V_{in(peak)}}{\sqrt{2}} = \frac{1.603}{\sqrt{2}} = 1.13$$
   <summary>Designing Single Stage With a Target Gain with Explicit $R_L$</summary>
 
 <br>
-The gain of an audio amplifier can vary, but a common target is around 30 dB. This translates to a voltage gain of about 32 times
+
+MOSFETs have numerous advantages over Bipolar Junction Transistors (BJTs), yet they are often perceived as limited to delivering modest voltage gains. While calculating the gain for a MOSFET amplifier design is straightforward, achieving a predefined, moderately high gain from the start is challenging. This difficulty arises because a MOSFET's gain parameter, known as transconductance, is dependent on and influenced by its bias point. Many designers overlook MOSFETs in linear applications, assuming that their potential gain is too insignificant to be worthwhile. However, when MOSFETs are properly biased and operated at frequencies below 100KHz, they can achieve gains approaching 50 and offer significantly higher input impedances. This is possible because a MOSFET's gain parameter, known as transconductance (gm), is dependent on its bias point (Q point).
+
+The gain of an audio amplifier can vary widely, typically ranging between 20 dB to 40 dB. In this context, I will aim for a gain of 50 because it seems to be a suitable middle ground within this range. This translates to a voltage gain of approximately 32 times.
+
+
   
 </details>
 
@@ -245,11 +250,6 @@ The gain of an audio amplifier can vary, but a common target is around 30 dB. Th
 <br>
 </details>
 
-<details>
-  <summary>Designing Single Stage With a Target Gain with $R_D$ = $R_L$</summary>
-
- <br>
-</details>
 
 
 A single-stage amplifier represents the most fundamental amplifier configuration, utilizing only one active component—such as a transistor or an operational amplifier—to amplify a signal. This simple design is the cornerstone of more complex multi-stage amplifiers, serving as the essential building block upon which they are constructed. The primary advantage of single-stage amplifiers lies in their simplicity: they are easy to design, analyze, and troubleshoot due to their straightforward configuration. This simplicity also translates to cost-effectiveness, as fewer components are needed, which reduces manufacturing costs and complexity. Moreover, the minimal component count leads to a compact size, making single-stage amplifiers ideal for applications where space is limited. However, this simplicity comes with limitations. Single-stage amplifiers typically provide lower gain compared to their multi-stage counterparts, which can be a drawback in applications requiring significant signal amplification. Additionally, their frequency response might be narrower, restricting their use in wideband applications where a broader frequency range is necessary. The power output of single-stage amplifiers is also generally lower, making them less suitable for high-power applications. Despite these limitations, single-stage amplifiers are well-suited for low-gain applications, such as pre-amplification stages in audio equipment, where moderate amplification suffices. A multistage amplifier, on the other hand, is an amplifier configuration that uses multiple single-stage amplifiers connected in sequence to achieve higher gain, improved frequency response, and enhanced overall performance. Each stage of the amplifier amplifies the signal progressively, allowing for greater amplification than a single-stage amplifier can provide. The construction involves cascading several amplifying stages, typically with coupling capacitors between stages to block DC components and pass the AC signal. This setup ensures that the biasing of each stage remains independent, preserving the amplification integrity. Ultimately, whether to use a single-stage or a multi-stage amplifier depends on the specific requirements of the application, including the desired gain, frequency response, power output, and overall complexity. Each approach offers its own set of benefits and trade-offs, necessitating careful consideration to meet the project’s needs effectively.
