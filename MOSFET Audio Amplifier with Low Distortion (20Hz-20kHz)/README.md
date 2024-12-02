@@ -85,6 +85,7 @@ The second approach involves designing with a target gain in mind, which alters 
 
 <details>
   <summary>Designing Without a Target Gain with Explicit $R_L$ Then Adding More Amplifier Stages</summary>
+<br>
   
 We are using:
 - $R_L = 32$ Ω
@@ -97,59 +98,59 @@ We have the following characteristics of the 2N7000 from the datasheet:
   
 Using the drain current equation in saturation mode: 
 
-$$ I_D = \frac{kn}{2} (V_{GS} - V_{TH})^2 $$
+$$I_D = \frac{kn}{2} (V_{GS} - V_{TH})^2$$
 
 So,
 
-$$ kn = \frac{2I_D}{(V_{GS} - V_{TH})^2} $$
+$$kn = \frac{2I_D}{(V_{GS} - V_{TH})^2}$$
 
 From the graph, when $V_{GS} = 6$ V, $I_D = 1.1$ A.
 
 Plugging these values into the $k_n$ equation:
 
-$$ kn = \frac{2 \times 1.1}{(6 - 2.1)^2} = 0.1446 \text{ A/V}^2 $$
+$$kn = \frac{2 \times 1.1}{(6 - 2.1)^2} = 0.1446 \text{ A/V}^2$$
 
 
 #### Voltage Calculations
 The rule of thirds is a heuristic used to position the operating point of a transistor, such as a MOSFET, to maximize the output voltage swing and ensure linear operation. By dividing the supply voltage ($V_{DD}$) into thirds, the operating point is chosen to balance between the different voltage states, ensuring the MOSFET remains in its optimal region for amplification (saturation) while allowing the maximum possible output signal without distortion. Setting the drain voltage to two-thirds of the supply voltage ensures that there is enough voltage drop across the MOSFET to keep it in the saturation region. This is crucial for the MOSFET to function effectively as an amplifier, as it needs a substantial voltage difference between the drain and source. Setting the source voltage to one-third of the supply voltage provides a stable reference point for the gate voltage. This helps to balance the voltage levels within the circuit, ensuring that the gate-to-source voltage ($V_{GS}$) is sufficient to turn the MOSFET on and maintain it in saturation. By having the source voltage at one-third of the supply voltage, it allows for a significant voltage swing without pushing the MOSFET out of the desired operating region.
 
-$$ V_D = \frac{2}{3} V_{DD} = \frac{2}{3} \times 20 = 13.3 \text{ V} $$
+$$V_D = \frac{2}{3} V_{DD} = \frac{2}{3} \times 20 = 13.3 \text{ V}$$
 
-$$ V_S = \frac{1}{3} V_{DD} = \frac{1}{3} \times 20 = 6.6 \text{ V} $$
+$$V_S = \frac{1}{3} V_{DD} = \frac{1}{3} \times 20 = 6.6 \text{ V}$$
 
 #### Resistance Calculations
 
 By Ohm's Law $V_D = I_D \times R_D$:
 
-$$ 13.3 = 0.200 R_D $$
+$$13.3 = 0.200 R_D$$
 
-$$ R_D = 66.5 \text{ Ω} $$
+$$R_D = 66.5 \text{ Ω}$$
 
 But this is divided over $R_D$ and $R_L$ because they are in series, so:
 
-$$ R_D = 34 \text{ Ω} $$ because $$ R_L = 32 \text{ Ω} $$
+$$R_D = 34 \text{ Ω} $$ because $$ R_L = 32 \text{ Ω}$$
 
 For $V_S = I_S \times R_S$ where $I_S = I_D$ because the same current passes through both the drain and source terminals:
 
-$$ 6.6 = 0.200 R_S $$
+$$6.6 = 0.200 R_S$$
 
-$$ R_S = 33 \text{ Ω} $$
+$$R_S = 33 \text{ Ω}$$
 
 #### Gate-Source Voltage Calculation
 
 Using $I_D = \frac{1}{2} kn (V_{GS} - V_{TH})^2$ again we get:
 
-$$ 0.200 = \frac{1}{2} \times 0.144 \times (V_{GS} - 2.1)^2 $$
+$$0.200 = \frac{1}{2} \times 0.144 \times (V_{GS} - 2.1)^2$$
 
-$$ V_{GS} = \sqrt{\left( \frac{2 \times 0.200}{0.144} \right)} + 2.1 = 3.76 $$
+$$V_{GS} = \sqrt{\left( \frac{2 \times 0.200}{0.144} \right)} + 2.1 = 3.76$$
 
 #### Gate Voltage Calculation
 
-$$ V_{GS} = V_G - V_S $$
+$$V_{GS} = V_G - V_S$$
 
-$$ 3.76 = V_G - 6.6 $$
+$$3.76 = V_G - 6.6$$
 
-$$ V_G = 10.36 $$
+$$V_G = 10.36$$
 
 #### Voltage Divider Calculation
 We know that we are controlling the gate voltage through the voltage divider network formed by $R1$ and $R2$.
@@ -181,6 +182,7 @@ We use $R2 = 259k \Omega$ and $R1 = 241k \Omega$ because using kilo-ohms helps r
 $$R_{eq(in)} = \frac{R1 \cdot R2}{R1 + R2} = \frac{(241 \times 10^3) \cdot (259 \times 10^3)}{(241 \times 10^3) + (259 \times 10^3)} = 124,838 \Omega$$
 
 **Frequency Calculations:**
+
 To ensure that the capacitive reactance at the cutoff frequency does not interfere significantly with the signal of interest. A decade below the lowest frequency ensures that the capacitors act almost like short circuits (very low impedance) at the frequencies of interest, thus not affecting the performance of the amplifier. So, to ensure the cutoff frequency ($f_c$) is at least one decade below the lowest frequency (20 Hz):
 
 $$f_c = \frac{20}{10} = 2 \text{Hz}$$
@@ -197,12 +199,41 @@ $$C_{out} = \frac{1}{2 \pi (R_D || R_L) f_c} = \frac{1}{2 \pi \left( \frac{66.5 
 
 $$C_{by} = \frac{1}{2 \pi R_S f_c} = \frac{1}{2 \pi \cdot 33 \cdot 2} = 2.411 \times 10^{-3} \text{F}$$
 
+
+Now that we have figured out the specifications, we can calculate the gain to see if our theoretical value agrees with the result in the simulation.
+
+$$A_v = |-g_m \cdot \frac{R_D R_L}{R_D + R_L}|$$
+
+which means we have to find $$g_m$$ first:
+
+$$g_m = k_n (V_{GS} - V_{TH}) = 0.144 (3.76 - 2.1) = 0.239$$
+
+Then,
+
+$$A_v = |-0.239 \cdot \frac{34 \cdot 32}{34 + 32}| = 3.93$$
+
+Now, if we want to expand this gain even further, we can add more stages to the amplifier, as will be explored in the implementation and testing section.
+
+Another thing we can calculate is the maximum input $$V_{rms}$$ that we can provide to our circuit to observe an amplified output free from clipping. We know that:
+
+$$V_{out} = V_{DD} - V_{DS} - V_S = 20 - 7.1 - 6.6 = 6.3$$
+
+Then,
+
+$$V_{in(peak)} = \frac{V_{out}}{|a_v|} = \frac{6.3}{3.93} = 1.603$$
+
+So,
+
+$$V_{in(rms)} = \frac{V_{in(peak)}}{\sqrt{2}} = \frac{1.603}{\sqrt{2}} = 1.13$$
+
+
 </details>
 
 
 <details>
   <summary>Designing Single Stage With a Target Gain with Explicit $R_L$</summary>
 
+<br>
 The gain of an audio amplifier can vary, but a common target is around 30 dB. This translates to a voltage gain of about 32 times
   
 </details>
@@ -210,13 +241,14 @@ The gain of an audio amplifier can vary, but a common target is around 30 dB. Th
 
 <details>
   <summary>Designing Without a Target Gain with $R_D$ = $R_L$ Then Adding More Amplifier Stages</summary>
-  
+
+<br>
 </details>
 
 <details>
   <summary>Designing Single Stage With a Target Gain with $R_D$ = $R_L$</summary>
 
- 
+ <br>
 </details>
 
 
@@ -284,11 +316,13 @@ As for comparing Junction Field-Effect Transistor (JFET) amplifiers to MOSFET am
 
 5. The maximum gain of a transistor is not always achieved at the maximum allowable drain current or the maximum supply voltage. The gain of a transistor is influenced by several factors, including the operating point, the load resistance, and the intrinsic characteristics of the transistor itself. While increasing the drain current can enhance the transconductance ($g_m$), which can increase gain, it also leads to higher power dissipation and can push the transistor closer to its thermal limits. This increased power dissipation can cause thermal effects that degrade performance and stability. Similarly, increasing the supply voltage ($V_{DD}$) does not always translate to maximum gain. Beyond a certain point, higher $V_{DD}$ can introduce excessive voltage stress on the transistor, potentially leading to breakdown or reduced reliability. The relationship between $V_{DD}$, drain current, and gain is not straightforward; after a certain point, further increases can lead to diminishing returns or even reduced gain due to the nonlinear behavior of the transistor. Optimal gain is typically achieved by carefully selecting the operating point (biasing), which places the transistor in the most linear region of its characteristic curves, ensuring efficient operation while minimizing distortion and thermal stress.
 
-6. The drain current in a MOSFET common-source amplifier is inherently continuous and consists of a steady DC component along with a superimposed small AC variation. This DC component sets the operating point of the MOSFET, ensuring that it remains in the active region, where it can effectively amplify the AC signal. The small AC variation represents the amplified input signal. Proper biasing prevents the drain current from becoming pulsed, which would introduce significant distortion and degrade the performance of the amplifier.
+6. There is a limit to the gain value you can achieve with a specific MOSFET, influenced by several factors. The gain of a MOSFET amplifier is directly proportional to its transconductance $g_m$, which is the ratio of the change in the drain current to the change in the gate-to-source voltage. Higher $g_m$ values result in higher gain. Additionally, the load resistance $R_D$ plays a crucial role, as the gain is also proportional to this resistance; higher $R_D$ values can increase the gain. The MOSFET must operate in the saturation region to achieve linear amplification, and this region's performance is maximized when the MOSFET is biased close to its threshold voltage, although this proximity limits how close you can get without causing distortion. Different MOSFETs have varying intrinsic characteristics, such as threshold voltage, maximum drain current, and breakdown voltage, which determine the maximum achievable gain. Parasitic capacitances within the MOSFET and the circuit layout can affect the frequency response and limit the gain at higher frequencies. Furthermore, high gain configurations can lead to increased power dissipation and thermal issues, impacting the MOSFET's stability and reliability. Proper design and biasing are essential to maximize the gain while maintaining stability and performance.
 
-7. MOSFET __cascode amplifiers__ and two common-source (CS) amplifiers connected in __cascade__ are two different configurations that serve different purposes in amplifier design. A MOSFET cascode amplifier combines a common-source stage with a common-gate stage, creating a configuration that improves high-frequency performance and increases the overall gain while minimizing Miller capacitance, which can degrade bandwidth. This setup is particularly useful for high-frequency and RF applications where stability and wide bandwidth are crucial. On the other hand, two common-source amplifiers connected in cascade involve connecting the output of one CS amplifier directly to the input of another CS amplifier. This configuration, known as a two-stage amplifier, enhances the overall voltage gain by multiplying the gains of the individual stages. Cascading amplifiers can achieve high gain, but they may also introduce more phase shift and potential stability issues, which need careful management. The term "multistage amplifier" can apply to both configurations, as it broadly refers to any amplifier that uses more than one amplification stage to achieve the desired performance characteristics. In summary, while both cascode and cascaded CS amplifiers fall under the category of multistage amplifiers, each has unique advantages and applications, with the cascode configuration favoring high-frequency stability and the cascaded CS configuration emphasizing high gain.
+7. The drain current in a MOSFET common-source amplifier is inherently continuous and consists of a steady DC component along with a superimposed small AC variation. This DC component sets the operating point of the MOSFET, ensuring that it remains in the active region, where it can effectively amplify the AC signal. The small AC variation represents the amplified input signal. Proper biasing prevents the drain current from becoming pulsed, which would introduce significant distortion and degrade the performance of the amplifier.
 
-8. When designing a Common Source (CS) MOSFET amplifier circuit, the unit prefix ranges for various components are typically chosen based on standard design practices. Input and output coupling capacitors are typically in the range of nanoFarads (nF) to microFarads (μF). Bypass Capacitor: Generally in the range of microFarads (μF) to milliFarads (mF). Common values are 10 μF to 1000 μF, depending on the required frequency response and stability. As for R1 and R2 (Gate Voltage Biasing), these resistors typically have values in the kiloOhms (kΩ) to megaOhms (MΩ) range. $R_D$ (Drain Resistor) is often in the hundreds of Ohms (Ω) to kiloOhms (kΩ) range. Finally, $R_S$ (Source Resistor) is usually in the Ohms (Ω) to hundreds of Ohms (Ω) range. The exact component values depend heavily on the specific MOSFET device you choose to use and its datasheet but these values are typical ranges based on common design practices. The following are a few key considerations from the datasheet that can influence component selection:  
+8. MOSFET __cascode amplifiers__ and two common-source (CS) amplifiers connected in __cascade__ are two different configurations that serve different purposes in amplifier design. A MOSFET cascode amplifier combines a common-source stage with a common-gate stage, creating a configuration that improves high-frequency performance and increases the overall gain while minimizing Miller capacitance, which can degrade bandwidth. This setup is particularly useful for high-frequency and RF applications where stability and wide bandwidth are crucial. On the other hand, two common-source amplifiers connected in cascade involve connecting the output of one CS amplifier directly to the input of another CS amplifier. This configuration, known as a two-stage amplifier, enhances the overall voltage gain by multiplying the gains of the individual stages. Cascading amplifiers can achieve high gain, but they may also introduce more phase shift and potential stability issues, which need careful management. The term "multistage amplifier" can apply to both configurations, as it broadly refers to any amplifier that uses more than one amplification stage to achieve the desired performance characteristics. In summary, while both cascode and cascaded CS amplifiers fall under the category of multistage amplifiers, each has unique advantages and applications, with the cascode configuration favoring high-frequency stability and the cascaded CS configuration emphasizing high gain.
+
+9. When designing a Common Source (CS) MOSFET amplifier circuit, the unit prefix ranges for various components are typically chosen based on standard design practices. Input and output coupling capacitors are typically in the range of nanoFarads (nF) to microFarads (μF). Bypass Capacitor: Generally in the range of microFarads (μF) to milliFarads (mF). Common values are 10 μF to 1000 μF, depending on the required frequency response and stability. As for R1 and R2 (Gate Voltage Biasing), these resistors typically have values in the kiloOhms (kΩ) to megaOhms (MΩ) range. $R_D$ (Drain Resistor) is often in the hundreds of Ohms (Ω) to kiloOhms (kΩ) range. Finally, $R_S$ (Source Resistor) is usually in the Ohms (Ω) to hundreds of Ohms (Ω) range. The exact component values depend heavily on the specific MOSFET device you choose to use and its datasheet but these values are typical ranges based on common design practices. The following are a few key considerations from the datasheet that can influence component selection:  
 &nbsp;  - Threshold Voltage ($V_{TH}$): Determines the minimum Gate-to-Source voltage needed to turn on the MOSFET.  
 &nbsp;  - Maximum Drain Current ($I_{D(max)}$): Influences the $R_D$ and $R_S$ to ensure the device operates safely within its current handling capabilities.  
 &nbsp;  - Gate Capacitance ($C_{GS}$, $C_{GD}$): Affects the values of coupling and bypass capacitors, especially in high-frequency applications.  
