@@ -28,7 +28,7 @@ Operating a MOSFET as an amplifier requires specific conditions to be met for th
 6. An appropriate DC power supply must be provided to the MOSFET circuit. The power supply voltage should be sufficient to support the required $V_{DS}$ and the desired output signal swing. It must also be stable to prevent variations that could affect the amplifier's performance.
 7. For AC signal amplification, bypass capacitors may be used to stabilize the biasing and ensure consistent operation over the desired frequency range. These capacitors help filter out any unwanted noise or fluctuations and improve the overall stability of the amplifier.
 
-Other key considerations include the signal swing, which refers to the range of the input signal that the amplifier can handle without clipping or distortion. It's essential to design the amplifier so that the output signal maintains its integrity throughout the expected range of input signal levels. This involves selecting appropriate component values and ensuring that the power supply voltage is sufficient. Lastly, the Operating Point (or Q-point) of the amplifier must be set to ensure that the transistor remains in the desired operating region (saturation) throughout the signal cycle. The Q-point is determined by the DC biasing conditions and affects the linearity and distortion of the amplifier. By carefully considering these factors, designers can create amplifiers that deliver high-quality, distortion-free output suitable for various applications.
+Other key considerations include the signal swing, which refers to the range of the input signal that the amplifier can handle without clipping or distortion. It's essential to design the amplifier so that the output signal maintains its integrity throughout the expected range of input signal levels. This involves selecting appropriate component values and ensuring that the power supply voltage is sufficient. Lastly, the Operating Point (or Q-point) of the amplifier must be set to ensure that the transistor remains in the desired [operating region](Photos/transistorsoperatingmodestheory.png) (saturation) throughout the signal cycle. The Q-point is determined by the DC biasing conditions and affects the linearity and distortion of the amplifier. By carefully considering these factors, designers can create amplifiers that deliver high-quality, distortion-free output suitable for various applications.
 
 As for our task, it suggests designing an audio amplifier. I have inferred this using some key clues from the design specifications given in the task statement. Firstly, the amplifier circuit must be one capable of driving a 32-ohm load. This typically refers to the impedance of audio devices like headphones or speakers, which are common loads for audio amplifiers. Minimal distortion was another specification and it is a critical requirement in audio systems to preserve sound quality. A frequency response between 20 Hz to 20 kHz  matches the human audible range, a standard specification for audio amplifiers. The primary function of an audio amplifier is to amplify low-level audio signals from sources like microphones, musical instruments, or audio playback devices to a level that can drive speakers.
 
@@ -66,7 +66,7 @@ Enhancement-type MOSFETs are typically preferred for amplifier applications due 
 
 N-channel MOSFETs are often preferred over P-channel MOSFETs in amplifier designs due to several key advantages. Firstly, N-channel MOSFETs typically offer lower on-resistance and higher current-carrying capabilities, which translates to better efficiency and performance in amplification circuits. They have superior electron mobility compared to P-channel devices, allowing for faster switching speeds and reduced power losses. This results in improved overall efficiency of the amplifier. Additionally, the drive voltage required to switch N-channel MOSFETs is generally lower, simplifying the design of the gate drive circuitry and enhancing the ease of control. This lower drive voltage also contributes to reduced power consumption and heat generation, which is critical for maintaining the reliability and longevity of the amplifier. Furthermore, N-channel MOSFETs are more widely available and cost-effective, making them a practical choice for most applications. These factors combined make N-channel MOSFETs the preferred option for high-performance, efficient, and cost-effective amplifier designs.
 
-Our MOSFET needs to be turned on before we can use it, so we need to bias it properly. Biasing a MOSFET ensures that it operates in the desired region. A good bias design ensures that the parameters of the operating point $I_D$, $V_{OV}$, and $V_{DS}$ are predictable, stable, and don't vary by a large amount when the transistor is replaced by another of the same type. There are several types of MOSFET biasing methods, each with its own merits and disadvantages. __Fixed Biasing__ involves applying a constant voltage to the gate using a resistor. This method is simple and easy to implement, but it lacks stability, as variations in the threshold voltage or temperature changes can significantly affect the operating point. __Voltage Divider Biasing__ uses a pair of resistors to create a stable voltage at the gate. This method provides better stability and control over the operating point compared to fixed biasing, but it is more complex to design and requires precise resistor values to maintain the desired bias point. __Self-Biasing or Source Biasing__ involves placing a resistor in the source terminal of the MOSFET. This method provides automatic adjustment of the gate-source voltage based on the current flow, enhancing stability. However, it can reduce the overall gain of the amplifier due to the voltage drop across the source resistor. For our designs, we will be using the classical voltage divider biasing technique.
+Our MOSFET needs to be turned on before we can use it, so we need to bias it properly. Biasing a MOSFET ensures that it operates in the desired region. A good bias design ensures that the parameters of the operating point $I_D$, $V_{OV}$, and $V_{DS}$ are predictable, stable, and don't vary by a large amount when the transistor is replaced by another of the same type. There are several types of MOSFET biasing methods, each with its own merits and disadvantages. __Fixed Biasing__ involves applying a constant voltage to the gate using a resistor. This method is simple and easy to implement, but it lacks stability, as variations in the threshold voltage or temperature changes can significantly affect the operating point. __Voltage Divider Biasing__ uses a pair of resistors to create a stable voltage at the gate. This method provides better stability and control over the operating point compared to fixed biasing, but it is more complex to design and requires precise resistor values to maintain the desired bias point. __Self-Biasing or Source Biasing__ involves placing a resistor in the source terminal of the MOSFET. This method provides automatic adjustment of the gate-source voltage based on the current flow, enhancing stability. However, it can reduce the overall gain of the amplifier due to the voltage drop across the source resistor. For our designs, we will be using the [classical voltage divider biasing technique](Photos/classicalbiasingtheory.png).
 
 We will be using the common source configuration of MOSFET amplifiers as it is the most common technique with many resources to refer back to. We didn't use the common drain configuration because it has unity gain (=1), which means it basically acts as a buffer rather than an amplifier. The common gate configuration provides low input impedance and is typically used in high-frequency applications where impedance matching is critical. The range of 20Hz to 20kHz is not considered high frequency in the context of electronics and radio communication. High frequencies generally refer to frequencies in the typical range from 30kHz to 300GHz. Hence, for our project, the common source configuration offers the best balance of gain, simplicity, and available resources, making it the most suitable choice.
 
@@ -234,6 +234,64 @@ $$V_{in(rms)} = \frac{V_{in(peak)}}{\sqrt{2}} = \frac{1.603}{\sqrt{2}} = 1.13$$
   <summary>Designing Without a Target Gain with $R_D$ = $R_L$ Then Adding More Amplifier Stages</summary>
 
 <br>
+
+### Design Steps
+
+1. Determine the drain voltage:  
+   $$V_D = \frac{V_{DD}}{2} = \frac{15}{2} = 7.5 \, V$$  
+
+2. Calculate the drain current:  
+   $$I_D = \frac{V_D}{R_L} = \frac{7.5}{32} = 0.234 \, A$$  
+
+3. Use the transistor equation to find $$I_D$$:  
+   $$I_D = \frac{k_n}{2}(V_{GS} - V_T)^2$$  
+
+4. Solve for $$V_{GS}$$:  
+   $$V_{GS} = \sqrt{\frac{2I_D}{k_n}} + V_T = \sqrt{\frac{2 \cdot 0.234}{0.144}} + 2.1 = 3.90 \, V$$  
+
+5. Find $$V_G$$:  
+   $$V_G = \frac{1}{3} V_{DD} = \frac{1}{3} \cdot 15 = 5 \, V$$  
+
+6. Solve for $$V_{GS}$$ in terms of $$V_G$$ and $$V_S$$:  
+   $$V_{GS} = V_G - V_S$$  
+   $$3.90 = 5 - V_S$$  
+   $$V_S = 1.1 \, V$$  
+
+7. Determine $$V_{DS}$$:  
+   $$V_{DS} = V_D - V_S$$  
+   $$V_{DS} = 7.5 - 1.1 = 6.4 \, V$$  
+
+8. Apply Ohm's law to find $$R_S$$:  
+   $$V_S = I_S R_S$$ (and we know that $$I_D = I_S$$)  
+   $$R_S = \frac{1.1}{0.234} = 4.7 \, \Omega$$  
+
+9. Find $$V_G$$ using the voltage divider:  
+   $$V_G = V_{DD} \cdot \frac{R_2}{R_1 + R_2}$$  
+   $$5 = 15 \cdot \frac{R_2}{R_1 + R_2}$$  
+   $$\frac{R_2}{R_1 + R_2} = \frac{1}{3}$$  
+
+10. Choose values for $$R_2$$ and $$R_1$$:  
+    $$R_2 = 200 \, k\Omega, \, R_1 = 100 \, k\Omega$$  
+    $$R_{eq} = \frac{R_1 R_2}{R_1 + R_2} = 66.66 \, k\Omega$$  
+
+11. Calculate the coupling capacitor $$C$$:  
+    $$C = \frac{1}{2 \pi R_{in} f_c} = 0.120 \, \mu F$$  
+
+### Notes:
+- With this design, there was a slight noticeable latency in the amplified signal.  
+- The latency became more pronounced when cascading the design into multiple stages, so we kept it as a single stage for demonstration and documentation purposes.  
+- Note that no bypass capacitor is used in this design.  
+
+### Gain Calculations:
+1. Calculate the transconductance $$g_m$$:  
+   $$g_m = k(V_{GS} - V_{T}) = 0.144(3.90 - 2.1) = 0.2592$$  
+
+2. Find the voltage gain $$A_v$$:  
+   $$A_v = -g_m \cdot \frac{R_L}{1 + g_m R_S}$$  
+   $$A_v = -0.2592 \cdot \frac{32}{1 + 0.259 \cdot 4.7} = -3.7$$  
+
+This result agrees with the output observed on the oscilloscope in Multisim.  
+
 </details>
 
 
@@ -386,49 +444,108 @@ $$84.6 \, \text{gain of the amp} \cdot 0.59 \, \text{gain of the buffer} = 49.9 
 
 
 
-A single-stage amplifier represents the most fundamental amplifier configuration, utilizing only one active component—such as a transistor or an operational amplifier—to amplify a signal. This simple design is the cornerstone of more complex multi-stage amplifiers, serving as the essential building block upon which they are constructed. The primary advantage of single-stage amplifiers lies in their simplicity: they are easy to design, analyze, and troubleshoot due to their straightforward configuration. This simplicity also translates to cost-effectiveness, as fewer components are needed, which reduces manufacturing costs and complexity. Moreover, the minimal component count leads to a compact size, making single-stage amplifiers ideal for applications where space is limited. However, this simplicity comes with limitations. Single-stage amplifiers typically provide lower gain compared to their multi-stage counterparts, which can be a drawback in applications requiring significant signal amplification. Additionally, their frequency response might be narrower, restricting their use in wideband applications where a broader frequency range is necessary. The power output of single-stage amplifiers is also generally lower, making them less suitable for high-power applications. Despite these limitations, single-stage amplifiers are well-suited for low-gain applications, such as pre-amplification stages in audio equipment, where moderate amplification suffices. A multistage amplifier, on the other hand, is an amplifier configuration that uses multiple single-stage amplifiers connected in sequence to achieve higher gain, improved frequency response, and enhanced overall performance. Each stage of the amplifier amplifies the signal progressively, allowing for greater amplification than a single-stage amplifier can provide. The construction involves cascading several amplifying stages, typically with coupling capacitors between stages to block DC components and pass the AC signal. This setup ensures that the biasing of each stage remains independent, preserving the amplification integrity. Ultimately, whether to use a single-stage or a multi-stage amplifier depends on the specific requirements of the application, including the desired gain, frequency response, power output, and overall complexity. Each approach offers its own set of benefits and trade-offs, necessitating careful consideration to meet the project’s needs effectively.
-
-
-
-
-
 ## Implementation & Testing 
 
-the typical vrms and hz and degree of an audio input signal 
+Here, we present the testing of the 3 amplifier designs. Each design was carefully implemented to highlight different configurations and their performance characteristics. The results will showcase the respective gains achieved for each design. This analysis will help demonstrate the practical impact of design choices on amplifier performance, focusing on how each configuration meets the desired requirements.
 
-Frequency response describes how effectively an amplifier, or any electronic system, can amplify or transmit signals of different frequencies. It is typically represented as a graph plotting the amplitude response (output signal strength) against frequency. The bandwidth refers to the range of frequencies over which the amplifier can operate effectively. For audio amplifiers, the bandwidth usually spans from 20 Hz to 20 kHz, covering the human audible range. Ideally, the frequency response should be flat across the desired frequency range, indicating that the amplifier consistently amplifies all frequencies without boosting or attenuating any particular frequency. At the edges of the bandwidth, the frequency response curve typically shows a roll-off, where the amplification starts to decrease. This indicates the frequencies at which the amplifier starts to lose its effectiveness.
 
-If your amplifier has a wide frequency response, it can amplify not only the desired signal within 20 Hz to 20 kHz but also any noise or unwanted signals outside this range. This can degrade the quality of the output signal. Amplifying signals outside the intended frequency range can also lead to unnecessary power consumption and heat generation, which can affect the efficiency and longevity of your amplifier.
+
+<details>
+  <summary>Designing Without a Target Gain with Explicit $R_L$ Then Adding More Amplifier Stages</summary>
+  
+<p align="center">
+  <img src="Photos/randomgainsinglestage.png" title="ModelSim Result" />
+</p>
+
+<p align="center">
+  <img src="Photos/multistage-layoutoverview.png" title="ModelSim Result" />
+</p>
+
+To calculate the maximum $$V_{\text{rms(in)}}$$ possible without clipping in a Common Source (CS) MOSFET amplifier, it is essential to ensure that the output signal remains within the amplifier's linear operating range. The maximum output swing is limited by the supply voltage ($$V_{DD}$$) and the MOSFET's saturation requirements, where $$V_{DS} > V_{GS} - V_T$$. The relationship between the input and output signals is determined by the amplifier's gain ($$A_v$$), such that $$V_{\text{out(pp)}} = A_v \cdot V_{\text{in(pp)}}$$. From this, the maximum input peak-to-peak voltage can be calculated as $$V_{\text{in(pp)}} = V_{\text{out(pp)}} / A_v$$. To find the root mean square (RMS) value of the input, the conversion formula $$V_{\text{rms(in)}} = V_{\text{in(pp)}} / (2\sqrt{2})$$ is applied.
+
+Noteworthy is that when cascading multiple Common Source (CS) MOSFET amplifier stages, the input signal's $V_{rms}$ must be reduced to prevent output clipping. This occurs because the gain accumulates across stages, with the total gain being the product of the individual stage gains. Even a small input signal can become significantly amplified, and if the signal exceeds the power supply voltage $V_{DD}$ or the MOSFET’s linear operating range, clipping occurs as the amplifier cannot reproduce signals beyond these limits. Additionally, large input signals can shift the biasing of subsequent stages, reducing the available headroom for signal swing and causing distortion. The amplified signal is also constrained by the supply voltage, making it easier to exceed voltage rails in later stages. To prevent clipping, it is essential to limit the input $V_{rms}$, optimize the biasing and gain of each stage, and consider design alternatives such as reducing the number of stages or introducing feedback mechanisms to manage gain effectively.
+
+Calculating Input Impedance
+
+Calculating Output Impedance
+
+Calculating Output Power
+
+</details>
+
+
+<details>
+  <summary>Designing Without a Target Gain with $R_D$ = $R_L$ Then Adding More Amplifier Stages</summary>
+  
+<p align="center">
+  <img src="Photos/rdisrlcsmosfetamplifier.png" title="ModelSim Result" />
+</p>
+
+</details>
+
+
+<details>
+  <summary>Designing Single Stage With a Target Gain with Explicit $R_L$</summary>
+  
+<p align="center">
+ <img src="Photos/gain50withoutload.png" style="width: 49%; height: 300px;" title="0000 0000 = 00" /> <img src="Photos/illustratingtheneedforbufferforload.png" style="width: 49%; height: 300px;" title="0001 0000 = 10"/> 
+</p>
+
+<p align="center">
+  <img src="Photos/final-csampifiercascadedwithcdbufferthenload.png" title="ModelSim Result" />
+</p>
+
+
+
+https://github.com/user-attachments/assets/58d01b6c-78d8-4f0f-8262-1897504275d0
+
+
+
+A source follower, also known as a common-drain amplifier, is a configuration commonly used in field-effect transistors (FETs) to convert a high-impedance input to a low-impedance output. It has high input impedance because the gate of the FET draws negligible current, allowing it to accept signals from high-impedance sources without significant loading. The output impedance is low, typically in the range of hundreds of ohms, because the output voltage at the source closely follows the gate voltage minus the threshold voltage. This makes it an ideal buffer, as it isolates stages of a circuit, preventing interaction between them, and allows for effective impedance transformation. In amplifier design, the common-source (CS) configuration is used to achieve high gain, but it has high output impedance, which can limit its ability to drive low-impedance loads. By cascading a source follower with a common-source amplifier, the source follower acts as a buffer, converting the high output impedance of the CS stage to low output impedance, while maintaining the voltage gain. 
+
+</details>
+
+
+
+
 
 ## Result Analysis
+
+Because we explored various designs, we will focus our analysis on only one of them to avoid redundancy, as the process would be repeated for each design. The key objective is to gain practical experience in AC, DC, frequency, and power analysis, ensuring a comprehensive understanding of these concepts through focused application.
 
 ### DC Analysis
 
 ### AC Analysis
 
-### Calculating Gain
+### Confirming The Frequency Response
 
-### Calculating Input Impedance
+<p align="center">
+  <img src="Photos/frequency-response-graph.png" title="ModelSim Result" />
+</p>
 
-### Calculating Output Impedance
+[Frequency response](Photos/frequencyresponsetheory.png) describes how effectively an amplifier, or any electronic system, can amplify or transmit signals of different frequencies. It is typically represented as a graph plotting the amplitude response (output signal strength) against frequency. The bandwidth refers to the range of frequencies over which the amplifier can operate effectively. For audio amplifiers, the bandwidth usually spans from 20 Hz to 20 kHz, covering the human audible range. Ideally, the frequency response should be flat across the desired frequency range, indicating that the amplifier consistently amplifies all frequencies without boosting or attenuating any particular frequency. At the edges of the bandwidth, the frequency response curve typically shows a roll-off, where the amplification starts to decrease. This indicates the frequencies at which the amplifier starts to lose its effectiveness. If my amplifier has a wide frequency response, it can amplify not only the desired signal within 20 Hz to 20 kHz but also any noise or unwanted signals outside this range. This can degrade the quality of the output signal. Amplifying signals outside the intended frequency range can also lead to unnecessary power consumption and heat generation, which can affect the efficiency and longevity of the amplifier. This could be tweaked by further enhancing our formulas for calculating capacitor values. Although, the highlight is that at the range that we want to be responsive to is all included within our response range. Lastly, these are the setup steps [1](Photos/frequencyresponseprep1.png) and [2](Photos/frequencyresponseprep2.png) to achieve the displayed result above in Multisim. In order to switch back out of this simulation mode, you must follow [this](Photos/runsimulationprep.png).
 
-### Calculating Output Power
 
 
 ## Future Improvements
 
+Regarding the "Designing Without a Target Gain with Explicit $R_L$ Then Adding More Amplifier Stages" technique, some considerations include the following:
 1. The 30 mF bypass capacitor is quite large. Such a large capacitor might also be physically large and expensive. A lower value capacitor could be sufficient to provide adequate bypassing while being more practical.
 2. The 3.68 mF output coupling capacitor is also quite large. While it ensures low-frequency response, it might be over-engineered for this application. A more reasonable value can still achieve the desired frequency response without being excessively large.
 3. The biasing resistors 241 kΩ and 259 kΩ have high values, which could introduce noise and affect the stability of the biasing network. Lowering these resistor values might help reduce noise and improve stability.
 5. The value of $R_S$ affects the stability and linearity of the amplifier. While a low $R_S$ can provide better stability and lower distortion, it also affects the gain, as part of the signal voltage is dropped across $R_S$.
 4. A low value for $R_D$ reduces the voltage gain of the amplifier.
 
-While a MOSFET amplifier in a CS configuration does indeed have a low output impedance, the values of the resistors in the circuit also play a critical role in determining overall performance, gain, and impedance characteristics. Very low values for R_D and R_S can lead to high power dissipation and thermal issues. Ensuring the resistors and the MOSFET can handle the power dissipation is important to prevent overheating and damage.
+While a MOSFET amplifier in a CS configuration does indeed have a low output impedance, the values of the resistors in the circuit also play a critical role in determining overall performance, gain, and impedance characteristics. Very low values for $R_D$ and $R_S$ can lead to high power dissipation and thermal issues. Ensuring the resistors and the MOSFET can handle the power dissipation is important to prevent overheating and damage.
+
+Luckily, most of these points haven't been introduced in the 2 alternative designs. As for other plans for advancement, we could explore designing more amplifiers using biasing techniques other than voltage dividers. This could also take us down the path of practically comparing and confirming the efficiency of all the biasing techniques we've learned about throughout our course. Finally, another thing to explore is other MOSFETs. For example, power MOSFETs like IRLZ44N, STP75NF75, or IRF540N. Not only will this expand and overcome the limitations that we had to work around during our utilization of the 2N7000 in this project but it will also help us gain experience in scanning datasheets of different manufacturers for relevant information and gain exposition to how many different ways the same piece of information can be represented according to the standards of different companies.
 
 
 ## Conclusion
 
 Summary of success and results in agreement with calculations
+
+A single-stage amplifier represents the most fundamental amplifier configuration, utilizing only one active component—such as a transistor or an operational amplifier—to amplify a signal. This simple design is the cornerstone of more complex multi-stage amplifiers, serving as the essential building block upon which they are constructed. The primary advantage of single-stage amplifiers lies in their simplicity: they are easy to design, analyze, and troubleshoot due to their straightforward configuration. This simplicity also translates to cost-effectiveness, as fewer components are needed, which reduces manufacturing costs and complexity. Moreover, the minimal component count leads to a compact size, making single-stage amplifiers ideal for applications where space is limited. However, this simplicity comes with limitations. Single-stage amplifiers typically provide lower gain compared to their multi-stage counterparts, which can be a drawback in applications requiring significant signal amplification. Additionally, their frequency response might be narrower, restricting their use in wideband applications where a broader frequency range is necessary. The power output of single-stage amplifiers is also generally lower, making them less suitable for high-power applications. Despite these limitations, single-stage amplifiers are well-suited for low-gain applications, such as pre-amplification stages in audio equipment, where moderate amplification suffices. A multistage amplifier, on the other hand, is an amplifier configuration that uses multiple single-stage amplifiers connected in sequence to achieve higher gain, improved frequency response, and enhanced overall performance. Each stage of the amplifier amplifies the signal progressively, allowing for greater amplification than a single-stage amplifier can provide. The construction involves cascading several amplifying stages, typically with coupling capacitors between stages to block DC components and pass the AC signal. This setup ensures that the biasing of each stage remains independent, preserving the amplification integrity. Ultimately, whether to use a single-stage or a multi-stage amplifier depends on the specific requirements of the application, including the desired gain, frequency response, power output, and overall complexity. Each approach offers its own set of benefits and trade-offs, necessitating careful consideration to meet the project’s needs effectively.
 
 Operational amplifiers (op-amps) are versatile and widely used components in electronics, known for their high gain and ease of use. However, op-amps are generally limited by their bandwidth, meaning they can only amplify signals effectively up to a certain frequency. Beyond this frequency, their gain decreases significantly due to internal compensation and parasitic capacitances, which limit their high-frequency performance. In contrast, MOSFETs can operate effectively at much higher frequencies. This is because MOSFETs have inherently lower parasitic capacitances and faster switching speeds compared to op-amps. As a result, MOSFETs can be used in applications requiring high-frequency amplification, such as RF (Radio Frequency) circuits and high-speed digital circuits. Additionally, MOSFETs offer greater flexibility in designing amplifiers with specific characteristics, such as high power handling and low noise performance, making them suitable for a wide range of applications beyond the capabilities of traditional op-amps.
 
@@ -492,20 +609,20 @@ This publication adheres to all regulatory laws and guidelines established by th
 
 ## Resources
 |1| Aaron Carman (Director). (2022, March 29). Electronics Tutorial 15: MOSFETs as Amplifiers [Video recording]. <br> https://www.youtube.com/watch?v=4nyudst1Q4c  
-|2| alldatasheet.com. (n.d.). ALLDATASHEET.COM. Retrieved December 4, 2024, from <br> http://www.alldatasheet.com/index.jsp  
+|2| alldatasheet.com. (n.d.). ALLDATASHEET.COM. <br> http://www.alldatasheet.com/index.jsp  
 |3| bobflux. (2021, November 25). Answer to “Why are MOSFETs good for audio output?” [Online post]. Electrical Engineering Stack Exchange. <br> https://electronics.stackexchange.com/a/596604  
-|4| Can one MOSFET transistor amplifier give good sounds? (n.d.). Quora. Retrieved December 3, 2024, from <br> https://www.quora.com/Can-one-MOSFET-transistor-amplifier-give-good-sounds  
-|5| Circuit design 6010610472 MOSFET: Common Source Amplifier. (n.d.). Tinkercad. Retrieved December 9, 2024, from <br> https://www.tinkercad.com/things/fv24JRjCE13  
-|6| Circuit design MOSFET as Common Amplifier. (n.d.). Tinkercad. Retrieved December 9, 2024, from <br> https://www.tinkercad.com/things/gJ3tJhyD8vz  
-|7| Circuit design MOSFET CS amplifier. (n.d.). Tinkercad. Retrieved December 9, 2024, from <br> https://www.tinkercad.com/things/7NDNTu0aWV4  
+|4| Can one MOSFET transistor amplifier give good sounds? (n.d.). Quora. <br> https://www.quora.com/Can-one-MOSFET-transistor-amplifier-give-good-sounds  
+|5| Circuit design 6010610472 MOSFET: Common Source Amplifier. (n.d.). Tinkercad. <br> https://www.tinkercad.com/things/fv24JRjCE13  
+|6| Circuit design MOSFET as Common Amplifier. (n.d.). Tinkercad. <br> https://www.tinkercad.com/things/gJ3tJhyD8vz  
+|7| Circuit design MOSFET CS amplifier. (n.d.). Tinkercad. <br> https://www.tinkercad.com/things/7NDNTu0aWV4  
 |8| CRUTCHFIELD (Director). (2022, March 10). What’s the difference between amplifier classes? | Crutchfield [Video recording]. <br> https://www.youtube.com/watch?v=wiTmht5XF2o  
-|9| DIY Class-A 2SK1058 MOSFET Amplifier Project. (n.d.). Retrieved December 4, 2024, from <br> https://diyaudioprojects.com/Solid/ZCA/ZCA.htm  
+|9| DIY Class-A 2SK1058 MOSFET Amplifier Project. (n.d.). <br> https://diyaudioprojects.com/Solid/ZCA/ZCA.htm  
 |10| EC Academy (Director). (2023a, March 11). AEC#15 Introduction to MOSFET amplifier configurations || EC Academy [Video recording]. <br> https://www.youtube.com/watch?v=FdWdC6b0soQ  
 |11| EC Academy (Director). (2023b, March 14). AEC#16 MOSFET Amplifier configurations || EC Academy [Video recording]. <br> https://www.youtube.com/watch?v=mmVQ5qg0a-w  
 |12| Engineering Society (Director). (2024, May 15). Audio Amplifier Project Simulation On Proteus [Video recording]. <br> https://www.youtube.com/watch?v=sb7eYNoumOI  
 |13| Engr. Hasnain Yaseen (Director). (2019, July 19). 500nW to 100W MOSFET Power Amplifier | Multisim Projects [Video recording]. <br> https://www.youtube.com/watch?v=OcuA3_MZ6eE  
 |14| ETSolutions (Director). (2021, April 2). Working of MOSFET: How MOSFET WORK [Video recording]. <br> https://www.youtube.com/watch?v=NqnWcv3KXSA  
-|15| How do I design a common source amplifier with a gain of 20? (n.d.). Quora. Retrieved December 7, 2024, from <br> https://www.quora.com/How-do-I-design-a-common-source-amplifier-with-a-gain-of-20  
+|15| How do I design a common source amplifier with a gain of 20? (n.d.). Quora. <br> https://www.quora.com/How-do-I-design-a-common-source-amplifier-with-a-gain-of-20  
 |16| JohnAudioTech (Director). (2021, January 15). Class A MOSFET amplifier using one transistor—With schematic [Video recording]. <br> https://www.youtube.com/watch?v=D4tHgHfljyY  
 |17| Jordan Louis Edmunds (Director). (2018, December 9). MOSFET Common-Source Amplifier [Video recording]. <br> https://www.youtube.com/watch?v=aeiHtgBbMW4  
 |18| Kareem nael (Director). (2020, May 16). MOSFET cascode amplifier [Video recording]. <br> https://www.youtube.com/watch?v=g3kn4yeAjEI  
@@ -516,22 +633,27 @@ This publication adheres to all regulatory laws and guidelines established by th
 |23| Mateo Aboy (Director). (2017b, February 28). Common Drain Amplifier [Video recording]. <br> https://www.youtube.com/watch?v=3612IWSj-CM  
 |24| Mateo Aboy (Director). (2017c, February 28). Example: Cascode Amplifier [Video recording]. <br> https://www.youtube.com/watch?v=CuaigFLeG_w  
 |25| Mateo Aboy (Director). (2017d, February 28). Example: Multistage MOSFET Amplifier [Video recording]. <br> https://www.youtube.com/watch?v=qpZUXwu7G_4  
-|26| Microelectronic Circuits. (n.d.). Retrieved December 4, 2024, from <br> https://www.goodreads.com/book/show/198582.Microelectronic_Circuits  
+|26| Microelectronic Circuits. (n.d.). <br> https://www.goodreads.com/book/show/198582.Microelectronic_Circuits  
 |27| MK Subramanian (Director). (2020, December 5). Mosfet Amplifier Simulation [Video recording]. <br> https://www.youtube.com/watch?v=pyz2rEZ6-w8  
 |28| Mostafa Abdelrehim, PhD (Director). (2020a, December 3). Lab 10 Common Drain Amplifier “Source Follower” in Multisim [Video recording]. <br> https://www.youtube.com/watch?v=qydIET-k27M  
 |29| Mostafa Abdelrehim, PhD (Director). (2020b, December 3). Lab 10 Common Source Amplifier in Multisim [Video recording]. <br> https://www.youtube.com/watch?v=i5nGKrNpgPU  
 |30| Music Techknowledgy (Director). (2023, April 15). Introduction to using Falstad Circuit Simulator for Audio Circuits (CS Amplifier) [Video recording]. <br> https://www.youtube.com/watch?v=DtXR7jOm2_s  
-|31| PassDiy. (n.d.). Retrieved December 3, 2024, from <br> https://www.passdiy.com/project/amplifiers/zen-variations-2  
+|31| PassDiy. (n.d.). <br> https://www.passdiy.com/project/amplifiers/zen-variations-2  
 |32| Roosta, S. (n.d.). ECE340L Electronics I Laboratory.  
 |33| See it Simple (Director). (2021, December 15). Simulate mosfet audio amplifier Proteus tutorial [Video recording]. <br> https://www.youtube.com/watch?v=9GQ8utq9UKo  
-|34| Simple MOSFET amplifier. (n.d.). CircuitLab. Retrieved December 8, 2024, from <br> https://www.circuitlab.com/circuit/78tgr5cjwta4/simple-mosfet-amplifier/  
-|35| Small Signal Amplifiers. (n.d.). [Video recording]. Retrieved December 7, 2024, from <br> https://www.youtube.com/watch?v=WgOKPF8LkA8  
+|34| Simple MOSFET amplifier. (n.d.). CircuitLab. <br> https://www.circuitlab.com/circuit/78tgr5cjwta4/simple-mosfet-amplifier/  
+|35| Small Signal Amplifiers. (n.d.). [Video recording]. <br> https://www.youtube.com/watch?v=WgOKPF8LkA8  
 |36| smita kadam (Director). (2020a, August 4). How to obtain DC Operating Point for MOSFET [Video recording]. <br> https://www.youtube.com/watch?v=cpRfcVyC1BA  
 |37| smita kadam (Director). (2020b, August 21). Simulation of MOSFET Amplifier Part A [Video recording]. <br> https://www.youtube.com/watch?v=AoMYVS_ejcY  
 |38| smita kadam (Director). (2020c, August 21). Simulation of MOSFET amplifier Part B [Video recording]. <br> https://www.youtube.com/watch?v=eCwQCyxofWo  
 |39| Storr, W. (2015, July 21). MOSFET Amplifier circuit using an Enhancemant MOSFET. Basic Electronics Tutorials. <br> https://www.electronics-tutorials.ws/amplifier/mosfet-amplifier.html  
-|40| Table of Contents. (n.d.). Ultimate Electronics Book. Retrieved December 3, 2024, from <br> https://ultimateelectronicsbook.com/  
+|40| Table of Contents. (n.d.). Ultimate Electronics Book. <br> https://ultimateelectronicsbook.com/  
 |41| techgurukula (Director). (2019, May 1). MOSFET: Common Source amplifier with resistive load [Video recording]. <br> https://www.youtube.com/watch?v=zQZ3DAqeGow  
 |42| Very simple MOSFET design in class A/A+/B. (2023, October 30). diyAudio. <br> https://www.diyaudio.com/community/threads/very-simple-mosfet-design-in-class-a-a-b.404961/  
 |43| VivTronics (Director). (2021, May 15). MOSFET CD Amplifier | Common Drain Amplifier Analysis | ECA | ECAD [Video recording]. <br> https://www.youtube.com/watch?v=h483RR206gs  
 |44| VS Circuits (Director). (2021, October 1). MOSFET Amplifier CS | Design and Implementation Using Proteus 8.0 [Video recording]. <br> https://www.youtube.com/watch?v=DYJvRb4U_mA  
+|45| Globig, J. (2015). A Practical Approach to Designing MOSFET Amplifiers for a Specific Gain. 2015 ASEE Annual Conference and Exposition Proceedings <br> https://doi.org/10.18260/p.23425  
+|46| Lab 10 Common Drain Amplifier “Source Follower” in Multisim—YouTube. (n.d.). <br> https://www.youtube.com/watch?v=qydIET-k27M&t=2s  
+|47| Mathway | Algebra Problem Solver. (n.d.). <br> https://www.mathway.com/Algebra  
+|48| Simultaneous Equations Solver—eMathHelp. (n.d.). <br> https://www.emathhelp.net/calculators/algebra-2/simultaneous-equations-solver/   
+
