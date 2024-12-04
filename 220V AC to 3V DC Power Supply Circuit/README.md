@@ -6,7 +6,7 @@
 <p align="center">
 
 <a href="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=gray">
-  <img src="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=white" title="Academic Year" style="vertical-align:top; margin:4px"></a> <a href="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=gray"><img src="https://custom-icon-badges.demolab.com/badge/Bachelor%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=white" title="Bachelor Course" style="vertical-align:top; margin:4px"></a> <a href="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=gray"><img src="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=white" title="Project Status" style="vertical-align:top; margin:4px"></a>
+  <img src="https://custom-icon-badges.demolab.com/badge/Academic%20Year-Fall%202024-ffffff?style=for-the-badge&logo=calendar&logoSource=feather&logoColor=white" title="Academic Year" style="vertical-align:top; margin:4px"></a> <a href="https://custom-icon-badges.demolab.com/badge/Bachelor's%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=gray"><img src="https://custom-icon-badges.demolab.com/badge/Bachelor's%20Course-Linear%20Electronics1-ffffff?style=for-the-badge&logo=book-open&logoSource=feather&logoColor=white" title="Bachelor's Course" style="vertical-align:top; margin:4px"></a> <a href="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=gray"><img src="https://custom-icon-badges.demolab.com/badge/Project%20Status-Completed-ffffff?style=for-the-badge&logo=activity&logoSource=feather&logoColor=white" title="Project Status" style="vertical-align:top; margin:4px"></a>
 
 </p>
 
@@ -105,7 +105,10 @@ $$V_r=12.7-\frac{12.7}{2\times 50\times 1000\times (470\times 10^{-6})} = 12.4V$
 
 This yields the filtered output voltage.
 
-### 7. **Zener Diode Voltage Regulation:**
+### 7. **Dynamic Resistance of the Zener:**
+We picked a value of 5 mA in the acceptable range of currents for the Zener diode and proceeded to calculate the $R_z$ as peak voltage of the circuit after the transformer stage minus the Zener voltage all over the current of the Zener. Which yielded $$\frac{10\sqrt{2} - 3}{5 \times 10^{-3}} = 2.2 \, \text{k}\Omega$$.
+
+### 8. **Zener Diode Voltage Regulation:**
 The Zener diode is used to clamp the voltage to a target value of 3.0V. Although the Zener diode has a nominal breakdown voltage rating of 3.1V, the output voltage will reach the target of 3.0V due to the small voltage drop of 0.1V across the Zener diode and the series resistor. This small voltage drop ensures that the output voltage is maintained at the desired 3.0V.
 
 
@@ -116,7 +119,35 @@ The Zener diode is used to clamp the voltage to a target value of 3.0V. Although
   <img src="Photos/actodc-circuit.png"/>
 </p>
 
+Shown above is the input signal and the resulting output voltage of the circuit, which is 3V. The circuit is functioning as expected through our manual calculations. We have placed various probes around the circuit to keep track of the voltage and current values throughout the circuit and that they are valued as intended. We can calculate the power as: $$P = I_z \times V_z = 3.07 \times 10^{-3} \times 3.0 = 9.21\, \text{mW}$$. This agrees with the result displayed on the wattmeter and is well within the Zener diode's power rating of 1W, as per its datasheet, so we are operating in safe conditions. Analyzing the power efficiency of the circuit involves comparing the output power delivered to the load with the input power from the AC source, considering component losses. 
 
+
+
+
+
+
+To calculate the **maximum current** that our circuit can supply, we can use the voltage and resistance relationships in the circuit instead of the power dissipation method. Starting with the equation $$V_{\text{pin}} - I \cdot R - V_{\text{Z}} = 0$$, where $$V_{\text{pin}}$$ is the peak input voltage, $$R$$ is the series resistor value, and $$V_{\text{Z}}$$ is the Zener diode's voltage. Substituting the values into the equation $$10\sqrt{2} - I \cdot (2.2 \times 10^3) - 3 = 0$$. Solving for $$I_{\text{max}}$$, we get $$5 \, \text{mA}$$. This current is limited by the series resistor and the input voltage constraints. Additional factors, such as the transformer, rectifier, and filtering capacitor, may further influence the actual current supplied by the circuit.
+
+
+Finally, we can calculate the range of loads by considering the voltage and current characteristics of the power supply. First, let's establish that the minimum load corresponds to the highest current the circuit can provide without excessive voltage drop. The current will be limited by the maximum current capability of the power supply and the Zener diode's voltage regulation. On the other hand, the maximum load corresponds to the lowest current, ideally where the circuit doesn't drop below the desired output voltage due to the internal resistance of the circuit or power losses. For example, if the load is too high, the current will be too small. 
+
+<p align="center">
+  <img src="Photos/600.png" style="width: 49%; height: 220px;"/> <img src="Photos/800.png" style="width: 49%; height: 220px;" /> 
+  <img src="Photos/2k.png" style="width: 49%; height: 220px;"/>  <img src="Photos/100k.png" style="width: 49%; height: 220px;" />
+  <img src="Photos/1M.png" style="width: 49%; height: 220px;"/> <img src="Photos/1G.png" style="width: 49%; height: 220px;" />
+</p>
+
+Through testing my circuit on Multisim, I observed that **there is no upper limit** to the maximum load resistance that the circuit can support while maintaining a regulated DC output voltage of 3V. I tested load resistances up to **1 GΩ**, and the circuit continued to function correctly. This behavior arises due to the nature of Zener diode regulation, where the diode maintains a constant output voltage regardless of how small the current becomes as the load resistance increases. However, at very high resistances, the **output power becomes negligible**, as the current drawn by the load decreases significantly. On the other hand, I determined that the **minimum load resistance** that maintains the 3V output is **600 Ω**. At this point, the current drawn is high enough to meet the load requirements without exceeding the Zener diode's limitations. This lower bound is dictated by the current-handling capability of the Zener diode and the power constraints of the circuit. The theoretical minimum load resistance can be calculated using the following formula $$R_{\text{min}}=\frac{V_{\text{out}}}{I_{\text{max}}}$$. Substituting the values we get $$R_{\text{min}}=\frac{3}{5\times10^{-3}}=600\,\Omega$$
+
+To enable the power supply to support loads **less than 300 ohms**, the circuit's **dynamic resistance**—primarily influenced by the Zener diode—plays a crucial role. A higher dynamic resistance can limit the amount of current delivered to the load, especially as the load resistance decreases. The **2.2kΩ resistor** in the circuit is likely part of the **current-limiting network** for the Zener diode or the voltage regulation setup. Reducing the value of this resistor would allow more current to flow to the load, thereby supporting lower load resistances. However, it is critical to ensure that the Zener diode can handle the increased current. If the current exceeds the Zener diode's maximum rating, it could overheat or fail. The **dynamic resistance** (or differential resistance) of the Zener diode refers to the effective resistance presented when the diode operates in its **reverse breakdown region**, regulating the voltage. This resistance is not constant; it depends on the operating point—specifically the voltage and current across the diode. When recalculating the dynamic resistance, the **current at the Zener diode's operating point** within its active reverse breakdown region must be considered to ensure accurate analysis and reliable operation of the circuit.
+
+To recalculate the **dynamic resistance** of the Zener diode, we use the **I-V characteristic graph** from the datasheet. The dynamic resistance $$R_{\text{dyn}}$$ is defined as the change in voltage divided by the corresponding change in current: $$R_{\text{dyn}} = \frac{dV}{dI} = \frac{0.7 - 0.55}{1 \times 10^{-3} - 0.01 \times 10^{-3}} \approx 151.51 \, \Omega$$. This dynamic resistance represents the **small-signal behavior** of the Zener diode in the breakdown region. It is an important parameter when analyzing the Zener diode's response to small variations in current or voltage. This much smaller value will expand the range of loads that our circuit can support from the $R_{min}$ side. Now, our **maximum current** would be $$0.07 \, \text{A}$$, and our calculated **minimum load resistance** $$R_{\text{min}}$$ would be $$42.85 \, \Omega$$. However, during testing, I was able to use a load as low as $$20 \, \Omega$$, and the circuit still maintained a DC voltage of **3 V**. At this point, some **ripple** started to appear in the output because we should have also adjusted the value of the capacitor accordingly, but we are keeping it fixed.
+
+From these observations, we concluded that the **larger the dynamic Zener resistance**, the **smaller the range of loads** supportable by the circuit will be. Interestingly, when I attempted to set the **dynamic resistance** $$R_{\text{dyn}}$$ to a very small value of $$5 \, \Omega$$, the circuit still regulated the voltage with loads as small as $$5 \, \Omega$$ even despite this not following the formulas that guide our design. Nonetheless, there were minor misregulations in the decimal values, as the output voltage was approximately **3.2 V** rather than the exact **3.0 V**. Further, we must be aware that this comes with the risk of potential overheating or excessive current depending on the Zener diode's limits, so this modification should be considered in light of the component’s ratings especially in real-life.
+
+<p align="center">
+  <img src="Photos/rdyn151.png" style="width: 49%; height: 220px;"/> <img src="Photos/rdyn5.png" style="width: 49%; height: 220px;" /> 
+</p>
 
 ## Future Improvements
 
