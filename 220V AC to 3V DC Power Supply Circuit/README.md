@@ -64,19 +64,58 @@ The detailed calculations regarding the values chosen for each of the circuit bu
 
 ## Design Procedure
 
-design justifications
-design assumptions
-design choices 
-
 You cannot represent a smartphone's load as a fixed 1k ohm resistor in your circuit because the resistance of a smartphone during charging is not constant and varies dynamically based on factors like the battery's state of charge, charging mode (standard vs. fast charging), and internal circuitry. Smartphones do not behave like passive resistors, as their current draw depends on the charging stage and the internal charging circuitry. For example, during fast charging, the phone actively negotiates higher voltages and currents (e.g., 9V, 2A), which translates to a much lower effective resistance, calculated by Ohm’s law as $$R = \frac{V}{I} = \frac{5V}{2A} = 2.5 \, \Omega$$. A 1k ohm resistor, on the other hand, would limit the current to $$I = \frac{V}{R} = \frac{5V}{1000 \, \Omega} = 5 \, \text{mA}$$, which is far too small for proper charging (most phones need at least 1A to 3A). The phone’s battery and its management system act as a complex, nonlinear load, with the battery's internal resistance changing depending on its charge level and temperature. For instance, during the early stages of charging, the resistance is lower to allow higher current flow, and as the battery fills up, the current decreases, and the effective resistance rises. Modern smartphones use buck converters or similar circuits to regulate the input power efficiently, adjusting the current and voltage dynamically. Thus, a smartphone’s resistance is much lower than 1k ohm and varies as it charges. To simulate a phone’s behavior accurately in a circuit, a dynamic load model or a current sink can be used, with typical charging scenarios having an effective resistance of $$R = 5 \, \Omega$$ for standard charging (5V, 1A), $$R = 4.5 \, \Omega$$ for fast charging (9V, 2A), and $$R = 4 \, \Omega$$ for higher power charging (12V, 3A). Despite this, however, we will design our circuit with the assumption that we have a fixed load. Later, we will calculate the range of load values that this circuit can effectively havdle without the DC output value being sabotaged.
 
 In my Multisim simulation, through steps [1](Photos/howtocustomize.png) and [2](Photos/customizing-the-diode-in-multisim.png), I customized the 1N4728A Zener diode to have a breakdown voltage rating of 3.0V, instead of its original 3.3V rating, as I was unable to find a component in the library that met my specific requirements. Since the 1N4728A was the closest available option, I modified its parameters by adjusting the breakdown voltage setting within the component properties. This allowed me to simulate the desired behavior of the Zener diode for my circuit, despite the library limitation. Although this modification is only an approximation, it enables me to model the voltage regulation characteristics I need for the project. This was also a good exercise, as we had never before edited the parameters of the components in the Multisim database. Learning how to modify and adjust these parameters allowed us to customize the behavior of the components in the circuit to better suit our design requirements, providing deeper insights into the simulation process. This is why you will find a star next to the component's name in the simulation photos in the next section.
+
+Our [plan](Photos/block-diagram.png) involves multiple steps of design. First, we know 4 things, The $V_{rms(in)} = 220 V$, the $V_{out} = 3 V$, and that the typical frequency of the AC mains in the UAE is 50 Hz. We also know that the 4 diodes in our full bridge rectifier have a 0.7 V across each of them, and since only 2 conduct every half cycle then we have a $2 \times 0.7 = 1.4 V$ voltage drop each half cycle. In our design, we are targeting a voltage ripple of 0.3 V, as this value strikes a practical balance between performance, cost, and complexity. While achieving a 0 V ripple might seem ideal, it would require significantly larger and more expensive components, such as high-capacity capacitors or more complex filtering stages, which could increase both the size and cost of the circuit. Additionally, reducing the ripple to zero often yields diminishing returns, as most electronic devices can tolerate a small amount of ripple without any significant impact on their functionality. A ripple of 0.3 V is generally within the tolerance limits of most components and is sufficient for the proper operation of the load, which may have their own internal regulation to further smooth out any fluctuations. We also have in mind a future plan of implementing this circuit in a laboratory where such expensive and capable capacitors may not exist. Therefore, designing for a 0.3 V ripple is a reasonable and efficient approach that meets the performance requirements while keeping the design both cost-effective and realizable in real life. 
+
+### 1. **Input Voltage Calculation:**
+The input AC voltage is first converted to DC using a full bridge rectifier. The peak voltage $V_p$ is calculated as follows:
+$$V_p=\frac{220}{\sqrt{2}}=155.5\, \text{V}$$
+
+### 2. **Transformer Turns Ratio:**
+The transformer steps down the voltage. The turns ratio $n$ of the transformer is the ratio of the number of turns in the primary coil to the secondary coil. This can be calculated by the ratio of the primary voltage $V_p$ to the secondary voltage $V_s$:
+$$n=\frac{\text{number of primary turns}}{\text{number of secondary turns}}=\frac{V_p}{V_s}=\frac{200}{10}=22$$
+
+### 3. **Rectifier Input Voltage:**
+The input to the full bridge rectifier is the peak voltage $V_p$, which is calculated from the RMS value $V_{rms}$ of the secondary voltage of the transformer:
+$$V_p=\sqrt{2}\times V_{rms}=\sqrt{2}\times 10=14.1\, \text{V}$$
+
+### 4. **Rectifier Output Voltage:**
+After the full bridge rectifier, the output voltage $V_{\text{rectifier}}$ is calculated by subtracting the voltage drops across the two diodes (each diode has a voltage drop of 0.7V):
+$$V_{\text{rectifier}}=V_p-2V_{\text{diodes}}=14.1-1.4=12.7\, \text{V}$$
+
+### 5. **Filtering Capacitor Calculation:**
+To achieve a small ripple voltage of 0.3V, the value of the filtering capacitor $C$ can be calculated using the following formula:
+$$V_{\text{ripple}}=\frac{V_p}{2 f R_L C}$$
+
+Substituting the given values:
+$$0.3=\frac{12.7}{2\times 50\times 1000\times C}$$
+
+Solving for \(C\):
+$$C=\frac{12.7}{2\times 50\times 1000\times 0.3}=430\, \mu\text{F}$$
+
+### 6. **Filtered Output Voltage:**
+Now, using the capacitor value, we can calculate the final output voltage after filtering. The filtered output $V_r$ is calculated as:
+$$V_r=V_{\text{rectifier}}-\frac{V_{\text{rectifier}}}{2 f R_L C}$$
+
+Substituting the values:
+$$V_r=12.7-\frac{12.7}{2\times 50\times 1000\times (470\times 10^{-6})} = 12.4V$$
+
+This yields the filtered output voltage.
+
+### 7. **Zener Diode Voltage Regulation:**
+The Zener diode is used to clamp the voltage to a target value of 3.0V. Although the Zener diode has a nominal breakdown voltage rating of 3.1V, the output voltage will reach the target of 3.0V due to the small voltage drop of 0.1V across the Zener diode and the series resistor. This small voltage drop ensures that the output voltage is maintained at the desired 3.0V.
+
+
 
 ## Implementation & Analysis 
 
 <p align="center">
   <img src="Photos/actodc-circuit.png"/>
 </p>
+
 
 
 ## Future Improvements
