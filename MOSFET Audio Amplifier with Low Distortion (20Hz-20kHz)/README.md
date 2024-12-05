@@ -351,7 +351,9 @@ $$I_D = \frac{0.0156}{2}(V_{GS} - 2)^2$$
 
 We get: $$V_{GS} = 2.8V$$ and $$I_D = 0.00499A$$
 
-Calculate the transconductance: $$gm = 0.0312 \times (2.8 - 2) = 0.02496 \, S$$ $$R_D = \frac{10}{0.00499} = 2004 \, \Omega$$
+Calculate the transconductance: $$gm = 0.0312 \times (2.8 - 2) = 0.02496 \, S$$ 
+
+$$R_D = \frac{10}{0.00499} = 2004 \, \Omega$$
 
 As a rule of thumb, we make: $$V_s = \frac{10}{100}V_{DD} = \frac{10}{100} \times 20 = 2V$$ 
 
@@ -600,6 +602,8 @@ Regarding the "Designing Without a Target Gain with Explicit $R_L$ Then Adding M
 While a MOSFET amplifier in a CS configuration does indeed have a low output impedance, the values of the resistors in the circuit also play a critical role in determining overall performance, gain, and impedance characteristics. Very low values for $R_D$ and $R_S$ can lead to high power dissipation and thermal issues. Ensuring the resistors and the MOSFET can handle the power dissipation is important to prevent overheating and damage.
 
 Luckily, most of these points haven't been introduced in the 2 alternative designs. As for other plans for advancement, we could explore designing more amplifiers using biasing techniques other than voltage dividers. This could also take us down the path of practically comparing and confirming the efficiency of all the biasing techniques we've learned about throughout our course. Finally, another thing to explore is other MOSFETs. For example, power MOSFETs like IRLZ44N, STP75NF75, or IRF540N. Not only will this expand and overcome the limitations that we had to work around during our utilization of the 2N7000 in this project but it will also help us gain experience in scanning datasheets of different manufacturers for relevant information and gain exposition to how many different ways the same piece of information can be represented according to the standards of different companies.
+
+Finally, a future plan includes simulating the circuit once again on a simulator that accepts audio type files to observe the actual functionality of the circuit. We could then incorporate a potentiometer at the gate to act as our volume control such that when rotating it we could get different levels of gain for the audio signal.
 
 
 ## Conclusion
