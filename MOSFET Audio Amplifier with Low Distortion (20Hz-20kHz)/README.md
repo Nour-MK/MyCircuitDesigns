@@ -656,18 +656,18 @@ gantt
     todayMarker off
     axisFormat %a-%Y-%m-%d
     section Research         
-        Nour Mostafa : active, 2024-11-28 00:00, 4d
+        Nour Mostafa : 2024-11-28 00:00, 4d
         Dema Ammar : 2024-11-20 00:00, 2d
     section Multisim         
-        Nour Mostafa : active, 2024-11-30 00:00, 2d
+        Nour Mostafa : 2024-11-30 00:00, 2d
         Asma Aldhaibani : 2024-11-22 00:00, 2d
     section CRUMB       
-        Nour Mostafa : active, 2024-12-5 00:00, 1d
+        Nour Mostafa : 2024-12-5 00:00, 1d
     section Analysis       
-        Asma Aldhaibani : active, 2024-12-02 00:00, 1.5d
+        Asma Aldhaibani : 2024-12-02 00:00, 1.5d
         Mariam Elhelaly : 2024-12-03 00:00, 1.5d
     section Report
-        Nour Mostafa : active, 2024-12-5 00:00, 1d
+        Nour Mostafa : 2024-12-5 00:00, 1d
 ```
 
 We extend our sincere appreciation to Dr. Ali Al Ataby for his insightful feedback which has significantly contributed to the completion of this project.
